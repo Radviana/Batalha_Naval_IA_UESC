@@ -9,6 +9,8 @@ def replace_to_print(element):
         element = barco
     elif element == '2':
         element = acerto
+    elif element == '3':
+        element = 'O'
     else:
         element = falha
         
@@ -20,12 +22,12 @@ def create_ship(row: int, column: int, ship_coord: list) -> np.ndarray:
     for coord in ship_coord:
         ship[coord - 1] = 1
     ship = ship.reshape((row, column))
-    #print(ship, "\n")
+    
     print_ship(ship)
     
     return ship
 
-def set_ship(ship: np.array, coords: set or list, mapa: np.array) -> None:
+def set_ship(ship: np.array, coords: set or list, mapa: np.array) -> bool:
     """Posiciona o navio no mapa
     ship: O Navio a ser posicionado
     coords: coordenada X e Y
@@ -38,10 +40,12 @@ def set_ship(ship: np.array, coords: set or list, mapa: np.array) -> None:
         tmp_y = coord_y
         
         for column in range(ship.shape[1]):
-            tmp_y = coord_y + column
-            tmp_x = coord_x + row 
-            
-            tmp_mapa[tmp_x - 1][tmp_y - 1] = ship[row][column]
+            tmp_y = coord_y + column - 1
+            tmp_x = coord_x + row - 1
+                
+            tmp_mapa[tmp_x][tmp_y] = ship[row][column]
+    mapa = tmp_mapa
+    return True
 
 def print_ship(ship):
     row, column = ship.shape

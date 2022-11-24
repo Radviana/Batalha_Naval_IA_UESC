@@ -35,8 +35,8 @@ ship = create_ship(2, 3, [2, 4, 6])
 posicao_x = 1
 posicao_y = 2
 
-
-        
+set_ship(ship, (posicao_x, posicao_y), mapa_pc)
+  
 player_radar = copy.deepcopy(mapa_pc)
 player_board = copy.deepcopy(mar_pc)
 ai_radar = copy.deepcopy(mapa_ia)
