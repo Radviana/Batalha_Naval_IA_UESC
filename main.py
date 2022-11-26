@@ -31,12 +31,11 @@ def ataque():
                 x = int(input("Informe a linha: "))
                 y = int(input("Informe a coluna: "))
 
-ship = create_ship(2, 3, [2, 4, 6])
-posicao_x = 1
-posicao_y = 2
+ship = create_ship(1, 4, [1, 2, 3, 4])
 
-set_ship(ship, (posicao_x, posicao_y), mapa_pc)
-  
+mapa_pc = set_ship(ship, (2, 1), mapa_pc)
+mapa_pc = set_ship(ship, (1, 1), mapa_pc)
+
 player_radar = copy.deepcopy(mapa_pc)
 player_board = copy.deepcopy(mar_pc)
 ai_radar = copy.deepcopy(mapa_ia)

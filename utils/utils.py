@@ -23,8 +23,6 @@ def create_ship(row: int, column: int, ship_coord: list) -> np.ndarray:
         ship[coord - 1] = 1
     ship = ship.reshape((row, column))
     
-    print_ship(ship)
-    
     return ship
 
 def set_ship(ship: np.array, coords: set or list, mapa: np.array) -> bool:
@@ -34,7 +32,31 @@ def set_ship(ship: np.array, coords: set or list, mapa: np.array) -> bool:
     mapa: o mapa"""
     coord_x, coord_y = coords
     tmp_mapa = deepcopy(mapa)
+    
+    # Verifica Esquerda e direita do návio verificando se tem barco perto ou não
+    print(coord_y + ship.shape[1] - 1)
+    for row in range(coord_x - 1, ship.shape[0] + coord_x):
+        if coord_y - 2 >= 0 and mapa[row][coord_y - 2] != 0:
+            print("tem navio na esquerda")
+            mapa[row][coord_y - 2] = 7
+            return mapa
+        if coord_y + ship.shape[1] - 1 <= 9 and mapa[row][coord_y + ship.shape[1] - 1] != 0:
+            print("tem navio na direita")
+            mapa[row][coord_y + ship.shape[1] -  1] = 7 
+            return mapa
+         
+    # Verifica cima e baixo do návio verificando se tem barco perto ou não
+    for column in range(coord_y - 1, ship.shape[1] + coord_y):
+        if coord_x - 2 >= 0 and mapa[coord_x - 2][column] != 0:
+            print("tem navio em cima") 
+            mapa[coord_x - 2][column] = 7 
+            return mapa
+        if coord_x + ship.shape[0] - 1 >= 0 and mapa[coord_x + ship.shape[0] - 1][column] != 0: 
+            print("tem navio em baixo")
+            mapa[coord_y + ship.shape[0] - 1][column] = 7  
+            return mapa
 
+    # Poem navio no mapa temporário
     for row in range(ship.shape[0]):
         tmp_x = coord_x
         tmp_y = coord_y
@@ -42,10 +64,14 @@ def set_ship(ship: np.array, coords: set or list, mapa: np.array) -> bool:
         for column in range(ship.shape[1]):
             tmp_y = coord_y + column - 1
             tmp_x = coord_x + row - 1
-                
-            tmp_mapa[tmp_x][tmp_y] = ship[row][column]
-    mapa = tmp_mapa
-    return True
+            
+            # Verifica se a posição é agua e se o index não excede 
+            if tmp_mapa[tmp_x][tmp_y] == 0 and 0 <= tmp_x <= 9 and 0 <= tmp_y <= 9 :   
+                tmp_mapa[tmp_x][tmp_y] = ship[row][column]
+            else:
+                print("tem navio na área")
+                return mapa
+    return tmp_mapa
 
 def print_ship(ship):
     row, column = ship.shape
