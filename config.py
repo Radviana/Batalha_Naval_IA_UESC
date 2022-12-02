@@ -5,11 +5,11 @@ from utils.utils import *
 tamanho = 10
 vida_jog , vida_ia = (45, 45)
 
-mapa_ia = np.zeros((tamanho, tamanho), dtype=int) # Consulta
-mapa_pc = np.zeros((tamanho, tamanho), dtype=int) # Consulta
+mapa_ia_consulta = np.zeros((tamanho, tamanho), dtype=int) # Consulta
+mapa_pc_consulta = np.zeros((tamanho, tamanho), dtype=int) # Consulta
 
-mar_ia = np.zeros((tamanho, tamanho), dtype=int) # Visivel
-mar_pc = np.zeros((tamanho, tamanho), dtype=int) # Visivel
+mapa_ia_visivel = np.zeros((tamanho, tamanho), dtype=int) # Visivel
+mapa_pc_visivel = np.zeros((tamanho, tamanho), dtype=int) # Visivel
 
 # Navios
 submarino = [create_ship(1, 1, [1])]

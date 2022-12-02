@@ -1,6 +1,6 @@
-import copy
 from config import *
 from utils.utils import *
+import json
 
 def print_board() -> None:
     #numbers = [i for i in range(1, 11)]
@@ -13,8 +13,8 @@ def print_board() -> None:
         else:
             espace = " " * 2 
           
-        tmp_ia = list(map(str, list(ai_radar[row])))
-        tmp_pc = list(map(str, list(player_radar[row])))
+        tmp_ia = list(map(str, list(mapa_ia_visivel[row])))
+        tmp_pc = list(map(str, list(mapa_pc_visivel[row])))
             
         tmp_ia = list(map(replace_to_print, tmp_ia))
         tmp_pc = list(map(replace_to_print, tmp_pc))
@@ -59,12 +59,14 @@ def put_ships(map):
             
     return map
                         
-mapa_pc = put_ships(mapa_pc)
+#mapa_pc = put_ships(mapa_pc)
+#mapa_ia = put_ship(mapa_ia)
 
-
-player_radar = copy.deepcopy(mapa_pc)
-player_board = copy.deepcopy(mar_pc)
-ai_radar = copy.deepcopy(mapa_ia)
-ai_board = copy.deepcopy(mar_ia)
+with open("mapas.json", 'r') as file:
+    dict_json = json.load(file)
+    mapa_pc = dict_json['mapa_pc']
+    mapa_ia = dict_json['mapa_ia']
+    mapa_ia_visivel = dict_json['mapa_ia']
+    mapa_pc_visivel = dict_json['mapa_pc']
 
 print_board()
