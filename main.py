@@ -1,6 +1,6 @@
 import copy
-from utils.utils import *
 from config import *
+from utils.utils import *
 
 def print_board() -> None:
     #numbers = [i for i in range(1, 11)]
@@ -31,25 +31,40 @@ def ataque():
                 x = int(input("Informe a linha: "))
                 y = int(input("Informe a coluna: "))
 
-ship = create_ship(1, 4, [1, 2, 3, 4])
+def put_ships(map):
+    #ships = [submarino, corvetas, fragatas, cruzadores, porta_avioes, hidro_avioes]
+    ships = [porta_avioes]
+    #ship_names = ['Submarino', 'Corveta', 'Fragata', 'Cruzador', 'Porta avião', 'Hidro Avião']
+    ship_names = ['Porta Avião']
+    
+    for ship, ship_name in zip(ships, ship_names):
+        op = -1
+        while True:
+            print(f"Colocando {ship_name}...")
+            x_ship = int(input(f"Digite a posicão X do {ship_name}: "))
+            y_ship = int(input(f"Digite a posicão Y do {ship_name}: "))
+            ship_orientation = int(input(f"Digite a orientação do {ship_name}: "))
+            print(f"X = {x_ship}")
+            print(f"Y = {y_ship}")
+            print(f"orientação = {ship_orientation}")
+            print(f"Navio = {ship[ship_orientation]}")
+            
+            map = set_ship(ship[ship_orientation], (x_ship, y_ship), map)
+            
+            op = input("Digite 0 para Sair e qualquer outra tecla para continuar: ")
+            print()
+            
+            if op == '0':
+                break
+            
+    return map
+                        
+mapa_pc = put_ships(mapa_pc)
 
-mapa_pc = set_ship(ship, (2, 1), mapa_pc)
-mapa_pc = set_ship(ship, (1, 1), mapa_pc)
 
 player_radar = copy.deepcopy(mapa_pc)
 player_board = copy.deepcopy(mar_pc)
 ai_radar = copy.deepcopy(mapa_ia)
 ai_board = copy.deepcopy(mar_ia)
-#number_board = copy.deepcopy(mapa_pc)
-
-#iniciar = int(input("Informe 1 para começar ou 2 para o computador começar: "))
-
-
-""" create_ship(2, 3, [2, 4, 6])
-create_ship(2, 3, [1, 3, 5])
-create_ship(3, 2, [1, 4, 5])
-create_ship(3, 2, [2, 3, 6]) """
-
-
 
 print_board()
