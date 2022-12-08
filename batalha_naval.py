@@ -1,41 +1,6 @@
-import numpy as np
+import json
+from config import *
 from copy import deepcopy
-from create_set_ship.create_set_ship import *
-
-agua = "~"
-falha = "X"
-acerto = "*"
-barco = '1' # '^'
-
-# Variáveis MAPA
-tamanho = 10
-vida_jog , vida_ia = (45, 45)
-
-mapa_ia_consulta = np.zeros((tamanho, tamanho), dtype=int) # Consulta
-mapa_jogador_consulta = np.zeros((tamanho, tamanho), dtype=int) # Consulta
-
-mapa_ia_visivel = np.zeros((tamanho, tamanho), dtype=int) # Visivel
-mapa_jogador_visivel = np.zeros((tamanho, tamanho), dtype=int) # Visivel
-
-# Navios
-submarino = [criar_navio(1, 1, [1])]
-corvetas = [criar_navio(2, 1, [1, 2]), criar_navio(1, 2, [1, 2])]
-fragatas = [criar_navio(3, 1, [1, 2, 3]), criar_navio(1, 3, [1, 2, 3])]
-cruzadores = [criar_navio(4, 1, [1, 2, 3, 4]), criar_navio(1, 4, [1, 2, 3, 4])]
-porta_avioes = [criar_navio(5, 1, [1, 2, 3, 4, 5]), criar_navio(1, 5, [1, 2, 3, 4, 5])]
-hidro_avioes = [criar_navio(2, 3, [2, 4, 6]), criar_navio(2, 3, [1, 3, 5]), criar_navio(3, 2, [1, 4, 5]),
-               criar_navio(3, 2, [2, 3, 6])]
-
-qtd_submarino = 3
-qtd_corveta = 2
-qtd_fragata = 3
-qtd_cruzador = 1
-qtd_porta_aviao = 1
-qtd_hidro_aviao = 2
-
-# Variáveis IA
-acerto_ia = False
-posicao_acerto = None
 
 def substitui_print(element):
     if element == '0':
@@ -64,7 +29,6 @@ def printa_navio(ship):
     print()
     
 def printa_mapa() -> None:
-    #numbers = [i for i in range(1, 11)]
     print("\t   IA\t\t\t   Player")
     print("    1 2 3 4 5 6 7 8 9 10 || 1 2 3 4 5 6 7 8 9 10")
     print("    _____________________||_____________________")
@@ -142,7 +106,24 @@ def get_empty_positions(map):
                             posicoes_vazias.add((i, j))
                     qtd_vazio_vertical, qtd_vazio_horizontal = 0, 0                          
          
-    return posicoes_vazias     
+    return posicoes_vazias 
+
+def get_empty_positions_2(mapa):
+    posicoes_vazias = set()
+    qtds_navios = [qtd_submarino, qtd_corveta, qtd_corveta, qtd_fragata, qtd_fragata, qtd_cruzador, qtd_cruzador, 
+                   qtd_porta_aviao, qtd_porta_aviao, qtd_hidro_aviao, qtd_hidro_aviao, qtd_hidro_aviao, qtd_hidro_aviao]
+    tipos_navios = submarino + corvetas + fragatas + cruzadores + porta_avioes + hidro_avioes 
+    
+    for tipo_navio, qtd_navio in zip(tipos_navios, qtds_navios):
+        if qtd_navio > 0:
+            for i in range(1, 11):
+                for j in range(1, 11):
+                    tmp_mapa = adicionar_navio(tipo_navio, (i, j), mapa)
+                    
+                    if tmp_mapa != mapa:
+                        posicoes_vazias.add((i, j))
+                        
+    return posicoes_vazias
     
 def ataque(qtds_navios: list):
     print("Faça 3 ataques: ")
@@ -182,3 +163,24 @@ def ataque(qtds_navios: list):
                 posicao_acerto = (x, y)
         else:
             pass
+
+if __name__ == "__main__":
+    mapa_ia = None
+    mapa_pc = None
+
+    with open("mapas.json", 'r') as file:
+        dict_json = json.load(file)
+        mapa_pc = dict_json['mapa_pc']
+        mapa_ia = dict_json['mapa_ia']
+        #mapa_ia_visivel = dict_json['mapa_ia']
+        #mapa_pc_visivel = dict_json['mapa_pc']
+        
+    pos = get_empty_positions_2(mapa_pc)
+    pos_2 = get_empty_positions(mapa_pc)
+    print(len(pos))
+    print(len(pos_2))
+
+    #mapa_ia_visivel = mapa_ia
+    #mapa_jogador_visivel = mapa_pc
+         
+    # printa_mapa()

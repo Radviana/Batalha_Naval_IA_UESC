@@ -10,7 +10,7 @@ def criar_navio(linha: int, coluna: int, coord_navio: list) -> np.ndarray:
     
     return navio
 
-def adicionar_navio(navio: np.array, coords: set or list, mapa: np.array) -> bool:
+def adicionar_navio(navio: np.array, coords: set or list, mapa: np.array) -> np.array:
     """Posiciona o navio no mapa
     ship: O Navio a ser posicionado
     coords: coordenada X e Y
@@ -21,19 +21,19 @@ def adicionar_navio(navio: np.array, coords: set or list, mapa: np.array) -> boo
     # Verifica Esquerda e direita do návio verificando se tem barco perto ou não
     for linha in range(coord_x - 1, navio.shape[0] + coord_x):
         if 0 <= coord_y - 2 <= 9 and 0 <= linha <= 9 and mapa[linha][coord_y - 2] != 0:
-            print("tem navio na esquerda")
+            # print("tem navio na esquerda")
             return mapa
         if coord_y + navio.shape[1] - 1 <= 9 and 0 <= linha <= 9 and mapa[linha][coord_y + navio.shape[1] - 1] != 0:
-            print("tem navio na direita")
+            # print("tem navio na direita")
             return mapa
          
     # Verifica cima e baixo do návio verificando se tem barco perto ou não
     for coluna in range(coord_y - 1, navio.shape[1] + coord_y):
         if 0 <= coord_x - 2 <= 9 and 0 <= coluna <= 9 and mapa[coord_x - 2][coluna] != 0:
-            print("tem navio em cima")  
+            # print("tem navio em cima")  
             return mapa
         if 0 <= coord_x + navio.shape[0] - 1 <= 9 and 0 <= coluna <= 9 and mapa[coord_x + navio.shape[0] - 1][coluna] != 0: 
-            print("tem navio em baixo")
+            # print("tem navio em baixo")
             return mapa
 
     # Poem navio no mapa temporário
@@ -49,6 +49,6 @@ def adicionar_navio(navio: np.array, coords: set or list, mapa: np.array) -> boo
             if (0 <= tmp_x <= 9 and 0 <= tmp_y <= 9 and tmp_mapa[tmp_x][tmp_y] == 0):  
                 tmp_mapa[tmp_x][tmp_y] = navio[linha][coluna]
             else:
-                print("tem navio na área ou posição invalida...")
+                # print("tem navio na área ou posição invalida...")
                 return mapa
     return tmp_mapa
