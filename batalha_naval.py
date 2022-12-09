@@ -81,8 +81,9 @@ def interface_colocar_navios(mapa, qtd_navios):
      
 def pega_posicoes_disponiveis(mapa):
     posicoes_vazias = set()
-    qtds_navios = [qtd_submarino_ia, qtd_corveta_ia, qtd_corveta_ia, qtd_fragata_ia, qtd_fragata_ia, qtd_cruzador_ia, qtd_cruzador_ia, 
-                   qtd_porta_aviao_ia, qtd_porta_aviao_ia, qtd_hidro_aviao_ia, qtd_hidro_aviao_ia, qtd_hidro_aviao_ia, qtd_hidro_aviao_ia]
+    qtds_navios = [qtd_submarino_ia, qtd_corveta_ia, qtd_corveta_ia, qtd_fragata_ia, qtd_fragata_ia, qtd_cruzador_ia, 
+                   qtd_cruzador_ia, qtd_porta_aviao_ia, qtd_porta_aviao_ia, qtd_hidro_aviao_ia, qtd_hidro_aviao_ia, 
+                   qtd_hidro_aviao_ia, qtd_hidro_aviao_ia]
     tipos_navios = submarino + corvetas + fragatas + cruzadores + porta_avioes + hidro_avioes
     id_navios = [1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 6, 6]
     
@@ -102,7 +103,7 @@ def verifica_acertos(mapa_consulta, coords, qtds_acertos, qtds_navios, nome_joga
     
     qtds_acertos[mapa_consulta[x][y] - 1] += 1
     if qtds_acertos[mapa_consulta[x][y] - 1] == limite_acertos[mapa_consulta[x][y] - 1]:
-        print(f"{nome_jogador} jogou ({x + 1}, {y + 1}) e derrubou um {nomes_navios[mapa_consulta[x][y] - 1]}\n")
+        print(f"{nome_jogador} jogou ({x + 1}, {y + 1}) e derrubou um {nomes_navios[mapa_consulta[x][y] - 1]}")
         qtds_navios[mapa_consulta[x][y] - 1] -= 1
         qtds_acertos[mapa_consulta[x][y] - 1] = 0
     else:
@@ -128,19 +129,16 @@ def ataque():
             
             if x > 9 or x < 0 or y > 9 or y < 0:
                 print("Jogada invalida..")
-                continue
-            
-            if mapa_ia_consulta[x][y] == 0:
+            elif mapa_ia_consulta[x][y] == 0 and mapa_ia_visivel[x][y] == 0:
                 mapa_ia_visivel[x][y] = -1
                 print("\nVocê errou, tiro ao mar...\n")
                 break
-            elif mapa_ia_consulta[x][y] in [1, 2, 3, 4, 5, 6]:
-                # qtds_acertos_jogador[mapa_ia_consulta[x][y] - 1] += 1
+            elif mapa_ia_consulta[x][y] in [1, 2, 3, 4, 5, 6] and mapa_ia_visivel[x][y] == 0:
                 verifica_acertos(mapa_ia_consulta, (x, y), qtds_acertos_jogador, qtds_navios_jogador, "Jogador")
                 mapa_ia_visivel[x][y] = 7
                 break
             else:
-                print("Jogada Invalida, Animal...")
+                print("Jogada Invalida, repita a jogada...")
         printa_mapa()
     
     """ print("\nVez da IA\n")  
@@ -192,8 +190,8 @@ def ataque():
                 if lados_jogar[0] == 'esquerda' and y-1-deslocamento >= 0 and mapa_jogador_visivel[x][y-1-deslocamento] == 0:
                     if mapa_jogador_consulta[x][y-1-deslocamento] == navio_acertado:
                         mapa_jogador_visivel[x][y-1-deslocamento] = 7
-                        deslocamento += 1
                         verifica_acertos(mapa_jogador_consulta, (x, y-1-deslocamento), qtds_acertos_ia, qtds_navios_ia, "IA")
+                        deslocamento += 1
                     else:
                         print(f"IA jogou ({x}, {y-1-deslocamento}) e errou, tiro ao mar...")
                         mapa_jogador_visivel[x][y-1-deslocamento] = -1
@@ -203,8 +201,8 @@ def ataque():
                 elif lados_jogar[0] == 'direita' and y+1+deslocamento <= 9 and mapa_jogador_visivel[x][y+1+deslocamento] == 0:
                     if mapa_jogador_consulta[x][y+1+deslocamento] == navio_acertado:
                         mapa_jogador_visivel[x][y+1+deslocamento] = 7
-                        deslocamento += 1
                         verifica_acertos(mapa_jogador_consulta, (x, y+1+deslocamento), qtds_acertos_ia, qtds_navios_ia, "IA")
+                        deslocamento += 1
                     else:
                         print(f"IA jogou ({x}, {y+1+deslocamento}) e errou, tiro ao mar...")
                         mapa_jogador_visivel[x][y+1+deslocamento] = -1
@@ -214,8 +212,8 @@ def ataque():
                 elif lados_jogar[0] == 'cima' and x-1-deslocamento >= 0 and mapa_jogador_visivel[x-1-deslocamento][y] == 0:
                     if mapa_jogador_consulta[x-1-deslocamento][y] == navio_acertado:
                         mapa_jogador_visivel[x-1-deslocamento][y] = 7
-                        deslocamento += 1
                         verifica_acertos(mapa_jogador_consulta, (x-1-deslocamento, y), qtds_acertos_ia, qtds_navios_ia, "IA")
+                        deslocamento += 1
                     else:
                         print(f"IA jogou ({x-1-deslocamento}, {y}) e errou, tiro ao mar...")
                         mapa_jogador_visivel[x-1-deslocamento][y] = -1
@@ -225,8 +223,8 @@ def ataque():
                 elif lados_jogar[0] == 'baixo' and x+1+deslocamento <= 9 and mapa_jogador_visivel[x+1+deslocamento][y] == 0:
                     if mapa_jogador_consulta[x+1+deslocamento][y] == navio_acertado:
                         mapa_jogador_visivel[x+1+deslocamento][y] = 7
-                        deslocamento += 1
                         verifica_acertos(mapa_jogador_consulta, (x+1+deslocamento, y), qtds_acertos_ia, qtds_navios_ia, "IA")
+                        deslocamento += 1
                     else:
                         print(f"IA jogou ({x+1+deslocamento}, {y}) e errou, tiro ao mar...")
                         mapa_jogador_visivel[x+1+deslocamento][y] = -1
@@ -260,6 +258,6 @@ if __name__ == "__main__":
          
     #printa_mapa()
     i = 0
-    while i < 3:
+    while i < 1:
         ataque()
         i+=1
