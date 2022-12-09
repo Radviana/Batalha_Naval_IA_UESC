@@ -81,38 +81,12 @@ def coloca_navios(mapa):
                 break
       
     return mapa
-    
-def get_empty_positions(map):
-    posicoes_vazias = set()
-    qtds_navios = [qtd_submarino, qtd_corveta, qtd_fragata, qtd_cruzador, qtd_porta_aviao]
-    limites_for = [10, 9, 8, 7, 6]
-    qtds_vazios = [1, 2, 3, 4, 5]
-    
-    # Verifica posições livres návios, exceto hidro-aviões
-    for qtd_navio, limite_for, qtd_vazio in zip(qtds_navios, limites_for, qtds_vazios):
-        if qtd_navio > 0:
-            for i in range(limite_for):
-                for j in range(limite_for):
-                    qtd_vazio_vertical = 0
-                    qtd_vazio_horizontal = 0
-                
-                    for k in range(limite_for - 1):
-                        if map[k][i] == 0:
-                            qtd_vazio_vertical += 1
-                        if map[i][k] == 0:
-                            qtd_vazio_horizontal += 1
-                    
-                        if qtd_vazio_horizontal == qtd_vazio or qtd_vazio_vertical == qtd_vazio:
-                            posicoes_vazias.add((i, j))
-                    qtd_vazio_vertical, qtd_vazio_horizontal = 0, 0                          
-         
-    return posicoes_vazias 
-
-def get_empty_positions_2(mapa):
+     
+def pega_posicoes_disponiveis(mapa):
     posicoes_vazias = set()
     qtds_navios = [qtd_submarino, qtd_corveta, qtd_corveta, qtd_fragata, qtd_fragata, qtd_cruzador, qtd_cruzador, 
                    qtd_porta_aviao, qtd_porta_aviao, qtd_hidro_aviao, qtd_hidro_aviao, qtd_hidro_aviao, qtd_hidro_aviao]
-    tipos_navios = submarino + corvetas + fragatas + cruzadores + porta_avioes + hidro_avioes 
+    tipos_navios = submarino + corvetas + fragatas + cruzadores + porta_avioes + hidro_avioes
     
     for tipo_navio, qtd_navio in zip(tipos_navios, qtds_navios):
         if qtd_navio > 0:
@@ -150,7 +124,7 @@ def ataque(qtds_navios: list):
         
         print(f"\nAtaque {i + 1}")
         
-        jogadas_disponiveis = get_empty_positions(mapa_jogador_visivel)
+        jogadas_disponiveis = pega_posicoes_disponiveis(mapa_jogador_visivel)
         if not acerto_ia:
             numero_sorteado = np.random.randint(0, len(jogadas_disponiveis))
             x, y = jogadas_disponiveis[numero_sorteado]
@@ -172,15 +146,14 @@ if __name__ == "__main__":
         dict_json = json.load(file)
         mapa_pc = dict_json['mapa_pc']
         mapa_ia = dict_json['mapa_ia']
-        #mapa_ia_visivel = dict_json['mapa_ia']
-        #mapa_pc_visivel = dict_json['mapa_pc']
+        mapa_ia_visivel = dict_json['mapa_ia']
+        mapa_pc_visivel = dict_json['mapa_pc']
         
-    pos = get_empty_positions_2(mapa_pc)
-    pos_2 = get_empty_positions(mapa_pc)
+    pos = pega_posicoes_disponiveis(mapa_ia)
     print(len(pos))
-    print(len(pos_2))
+    print(sorted(pos))
 
     #mapa_ia_visivel = mapa_ia
     #mapa_jogador_visivel = mapa_pc
          
-    # printa_mapa()
+    printa_mapa()

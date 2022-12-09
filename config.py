@@ -1,5 +1,5 @@
 import numpy as np
-from create_set_ship.create_set_ship import *
+from criar_definir_navio.criar_definir_navio import *
 
 agua = "~"
 falha = "X"
