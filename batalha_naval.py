@@ -1,4 +1,5 @@
 import json
+# import time
 import random
 from config import *
 from copy import deepcopy
@@ -26,7 +27,7 @@ def printa_navio(ship):
     print()
     
 def printa_mapa() -> None:
-    print("\t   IA\t\t\t   Player")
+    print("\n\t   IA\t\t\t   Player")
     print("    1 2 3 4 5 6 7 8 9 10 || 1 2 3 4 5 6 7 8 9 10")
     print("    _____________________||_____________________")
     for linha in range(tamanho):
@@ -47,10 +48,8 @@ def printa_mapa() -> None:
         print(f"{linha + 1}{espaco}|{tmp_ia}  || {tmp_jogador} |")
     print("   ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯")
     
-def coloca_navios(mapa):
+def interface_colocar_navios(mapa, qtd_navios):
     navios = [submarino, corvetas, fragatas, cruzadores, porta_avioes, hidro_avioes]
-    nomes_navios = ['Submarino', 'Corveta', 'Fragata', 'Cruzador', 'Porta avião', 'Hidro Avião']
-    qtd_navios = [qtd_submarino, qtd_corveta, qtd_fragata, qtd_cruzador, qtd_porta_aviao, qtd_hidro_aviao]
     id_navios = [1, 2, 3, 4, 5, 6]
     
     for i in len(navios):
@@ -82,8 +81,8 @@ def coloca_navios(mapa):
      
 def pega_posicoes_disponiveis(mapa):
     posicoes_vazias = set()
-    qtds_navios = [qtd_submarino, qtd_corveta, qtd_corveta, qtd_fragata, qtd_fragata, qtd_cruzador, qtd_cruzador, 
-                   qtd_porta_aviao, qtd_porta_aviao, qtd_hidro_aviao, qtd_hidro_aviao, qtd_hidro_aviao, qtd_hidro_aviao]
+    qtds_navios = [qtd_submarino_ia, qtd_corveta_ia, qtd_corveta_ia, qtd_fragata_ia, qtd_fragata_ia, qtd_cruzador_ia, qtd_cruzador_ia, 
+                   qtd_porta_aviao_ia, qtd_porta_aviao_ia, qtd_hidro_aviao_ia, qtd_hidro_aviao_ia, qtd_hidro_aviao_ia, qtd_hidro_aviao_ia]
     tipos_navios = submarino + corvetas + fragatas + cruzadores + porta_avioes + hidro_avioes
     id_navios = [1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 6, 6]
     
@@ -97,6 +96,17 @@ def pega_posicoes_disponiveis(mapa):
                         posicoes_vazias.add((i, j))
                         
     return list(posicoes_vazias)
+
+def verifica_acertos(mapa_consulta, coords, qtds_acertos, qtds_navios, nome_jogador):
+    x, y = coords
+    
+    qtds_acertos[mapa_consulta[x][y] - 1] += 1
+    if qtds_acertos[mapa_consulta[x][y] - 1] == limite_acertos[mapa_consulta[x][y] - 1]:
+        print(f"{nome_jogador} jogou ({x + 1}, {y + 1}) e derrubou um {nomes_navios[mapa_consulta[x][y] - 1]}\n")
+        qtds_navios[mapa_consulta[x][y] - 1] -= 1
+        qtds_acertos[mapa_consulta[x][y] - 1] = 0
+    else:
+        print(f"{nome_jogador} jogou ({x + 1}, {y + 1}) e acertou uma parte de uma {nomes_navios[mapa_consulta[x][y] - 1]}")
     
 def ataque():
     global acerto_ia
@@ -104,8 +114,9 @@ def ataque():
     global lados_jogar
     global posicao_acerto
     global navio_acertado
+    global qtds_acertos_ia, qtds_acertos_jogador
     
-    """  print("Vez do jogador, Faça 3 ataques: \n")
+    print("Vez do jogador, Faça 3 ataques: ")
     printa_mapa()
     for i in range(3):
         while True:
@@ -121,16 +132,18 @@ def ataque():
             
             if mapa_ia_consulta[x][y] == 0:
                 mapa_ia_visivel[x][y] = -1
+                print("\nVocê errou, tiro ao mar...\n")
                 break
             elif mapa_ia_consulta[x][y] in [1, 2, 3, 4, 5, 6]:
-                print(f"Você acertou uma parte de uma {nomes_navios[mapa_ia_consulta[x][y] - 1]}\n")
+                # qtds_acertos_jogador[mapa_ia_consulta[x][y] - 1] += 1
+                verifica_acertos(mapa_ia_consulta, (x, y), qtds_acertos_jogador, qtds_navios_jogador, "Jogador")
                 mapa_ia_visivel[x][y] = 7
                 break
             else:
                 print("Jogada Invalida, Animal...")
-        printa_mapa() """
+        printa_mapa()
     
-    print("\nVez da IA\n")  
+    """ print("\nVez da IA\n")  
     i = 0                 
     while i < 3:
         jogadas_disponiveis = pega_posicoes_disponiveis(mapa_jogador_visivel)
@@ -138,12 +151,13 @@ def ataque():
             numero_sorteado = random.randint(0, len(jogadas_disponiveis) - 1)
             x, y = jogadas_disponiveis[numero_sorteado]
             x, y = x-1, y-1
-
+            
             if mapa_jogador_consulta[x][y] == 0:
                 mapa_jogador_visivel[x][y] = -1
+                print(f"IA jogou ({x}, {y}) e errou, tiro ao mar...")
             elif mapa_jogador_consulta[x][y] in [1, 2, 3, 4, 5, 6]:
                 mapa_jogador_visivel[x][y] = 7
-                print(f"IA acertou uma parte de uma {nomes_navios[mapa_ia_consulta[x][y] - 1]}")
+                verifica_acertos(mapa_jogador_consulta, (x, y), qtds_acertos_ia, qtds_navios_ia, "IA")
                 
                 if mapa_jogador_consulta[x][y] != 1:
                     acerto_ia = True
@@ -176,54 +190,53 @@ def ataque():
                 acerto_ia = False
             elif navio_acertado in [1, 2, 3, 4, 5, 6]: # Verifica se é um dos návios base
                 if lados_jogar[0] == 'esquerda' and y-1-deslocamento >= 0 and mapa_jogador_visivel[x][y-1-deslocamento] == 0:
-                    print("tentou esquerda")
-                    
                     if mapa_jogador_consulta[x][y-1-deslocamento] == navio_acertado:
                         mapa_jogador_visivel[x][y-1-deslocamento] = 7
                         deslocamento += 1
+                        verifica_acertos(mapa_jogador_consulta, (x, y-1-deslocamento), qtds_acertos_ia, qtds_navios_ia, "IA")
                     else:
-                        mapa_jogador_visivel[x][y-1-deslocamento] = 8
+                        print(f"IA jogou ({x}, {y-1-deslocamento}) e errou, tiro ao mar...")
+                        mapa_jogador_visivel[x][y-1-deslocamento] = -1
                         deslocamento = 0
                         del lados_jogar[0]
                     
                 elif lados_jogar[0] == 'direita' and y+1+deslocamento <= 9 and mapa_jogador_visivel[x][y+1+deslocamento] == 0:
-                    print("tentou direita")
-                    
                     if mapa_jogador_consulta[x][y+1+deslocamento] == navio_acertado:
                         mapa_jogador_visivel[x][y+1+deslocamento] = 7
                         deslocamento += 1
+                        verifica_acertos(mapa_jogador_consulta, (x, y+1+deslocamento), qtds_acertos_ia, qtds_navios_ia, "IA")
                     else:
-                        mapa_jogador_visivel[x][y+1+deslocamento] = 8
+                        print(f"IA jogou ({x}, {y+1+deslocamento}) e errou, tiro ao mar...")
+                        mapa_jogador_visivel[x][y+1+deslocamento] = -1
                         deslocamento = 0
                         del lados_jogar[0]
     
                 elif lados_jogar[0] == 'cima' and x-1-deslocamento >= 0 and mapa_jogador_visivel[x-1-deslocamento][y] == 0:
-                    print("tentou cima")
-                    
                     if mapa_jogador_consulta[x-1-deslocamento][y] == navio_acertado:
                         mapa_jogador_visivel[x-1-deslocamento][y] = 7
                         deslocamento += 1
+                        verifica_acertos(mapa_jogador_consulta, (x-1-deslocamento, y), qtds_acertos_ia, qtds_navios_ia, "IA")
                     else:
-                        mapa_jogador_visivel[x-1-deslocamento][y] = 8
+                        print(f"IA jogou ({x-1-deslocamento}, {y}) e errou, tiro ao mar...")
+                        mapa_jogador_visivel[x-1-deslocamento][y] = -1
                         deslocamento = 0
                         del lados_jogar[0]
                     
                 elif lados_jogar[0] == 'baixo' and x+1+deslocamento <= 9 and mapa_jogador_visivel[x+1+deslocamento][y] == 0:
-                    print("tentou baixo")
-                    
                     if mapa_jogador_consulta[x+1+deslocamento][y] == navio_acertado:
                         mapa_jogador_visivel[x+1+deslocamento][y] = 7
                         deslocamento += 1
+                        verifica_acertos(mapa_jogador_consulta, (x+1+deslocamento, y), qtds_acertos_ia, qtds_navios_ia, "IA")
                     else:
-                        mapa_jogador_visivel[x+1+deslocamento][y] = 8
+                        print(f"IA jogou ({x+1+deslocamento}, {y}) e errou, tiro ao mar...")
+                        mapa_jogador_visivel[x+1+deslocamento][y] = -1
                         deslocamento = 0
-                        del lados_jogar[0]
-                        
+                        del lados_jogar[0] 
                 i+=1
             else:
                 print("aqui")
                 i+=1  
-    printa_mapa()
+    printa_mapa() """
 
 if __name__ == "__main__":
     mapa_ia = None
