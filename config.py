@@ -25,6 +25,8 @@ porta_avioes = [criar_navio(5, 1, [1, 2, 3, 4, 5]), criar_navio(1, 5, [1, 2, 3, 
 hidro_avioes = [criar_navio(2, 3, [2, 4, 6]), criar_navio(2, 3, [1, 3, 5]), criar_navio(3, 2, [1, 4, 5]),
                criar_navio(3, 2, [2, 3, 6])]
 
+nomes_navios = ['Submarino', 'Corveta','Fragata', 'Cruzador', 'Porta Avião', 'Hidro Avião']
+
 qtd_submarino = 3
 qtd_corveta = 2
 qtd_fragata = 3
@@ -35,3 +37,6 @@ qtd_hidro_aviao = 2
 # Variáveis IA
 acerto_ia = False
 posicao_acerto = None
+lados_jogar = []
+navio_acertado = None
+deslocamento = 0

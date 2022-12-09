@@ -10,7 +10,7 @@ def criar_navio(linha: int, coluna: int, coord_navio: list) -> np.ndarray:
     
     return navio
 
-def adicionar_navio(navio: np.array, coords: set or list, mapa: np.array) -> np.array:
+def adicionar_navio(navio: np.array, coords: set or list, id_navio, mapa: np.array) -> np.array:
     """Posiciona o navio no mapa
     ship: O Navio a ser posicionado
     coords: coordenada X e Y
@@ -47,7 +47,7 @@ def adicionar_navio(navio: np.array, coords: set or list, mapa: np.array) -> np.
             
             # Verifica se a posição é agua e se o index não excede
             if (0 <= tmp_x <= 9 and 0 <= tmp_y <= 9 and tmp_mapa[tmp_x][tmp_y] == 0):  
-                tmp_mapa[tmp_x][tmp_y] = navio[linha][coluna]
+                tmp_mapa[tmp_x][tmp_y] = id_navio
             else:
                 # print("tem navio na área ou posição invalida...")
                 return mapa
