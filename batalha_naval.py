@@ -86,19 +86,20 @@ def pega_posicoes_disponiveis(mapa):
                    qtd_hidro_aviao_ia, qtd_hidro_aviao_ia]
     tipos_navios = submarino + corvetas + fragatas + cruzadores + porta_avioes + hidro_avioes
     id_navios = [1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 6, 6]
-    
+   
     for id_navio, tipo_navio, qtd_navio in zip(id_navios, tipos_navios, qtds_navios):
         if qtd_navio > 0:
             for i in range(1, 11):
                 for j in range(1, 11):
                     tmp_mapa = adicionar_navio(tipo_navio, (i, j), id_navio, mapa)
                     
-                    if ~np.array_equal(tmp_mapa, mapa):
+                    if not np.array_equal(tmp_mapa, mapa):
                         posicoes_vazias.add((i, j))
                         
-    return list(posicoes_vazias)
+    return sorted(list(posicoes_vazias))
 
 def verifica_acertos(mapa_consulta, coords, qtds_acertos, qtds_navios, nome_jogador):
+    global lados_jogar
     x, y = coords
     
     qtds_acertos[mapa_consulta[x][y] - 1] += 1
@@ -106,6 +107,9 @@ def verifica_acertos(mapa_consulta, coords, qtds_acertos, qtds_navios, nome_joga
         print(f"{nome_jogador} jogou ({x + 1}, {y + 1}) e derrubou um {nomes_navios[mapa_consulta[x][y] - 1]}")
         qtds_navios[mapa_consulta[x][y] - 1] -= 1
         qtds_acertos[mapa_consulta[x][y] - 1] = 0
+        
+        if nome_jogador.lower() == "ia":
+            lados_jogar = []
     else:
         print(f"{nome_jogador} jogou ({x + 1}, {y + 1}) e acertou uma parte de uma {nomes_navios[mapa_consulta[x][y] - 1]}")
     
@@ -117,7 +121,7 @@ def ataque():
     global navio_acertado
     global qtds_acertos_ia, qtds_acertos_jogador
     
-    print("Vez do jogador, Faça 3 ataques: ")
+    """ print("Vez do jogador, Faça 3 ataques: ")
     printa_mapa()
     for i in range(3):
         while True:
@@ -139,11 +143,11 @@ def ataque():
                 break
             else:
                 print("Jogada Invalida, repita a jogada...")
-        printa_mapa()
+        printa_mapa() """
     
-    """ print("\nVez da IA\n")  
+    print("\nVez da IA\n")  
     i = 0                 
-    while i < 3:
+    while i < 20:
         jogadas_disponiveis = pega_posicoes_disponiveis(mapa_jogador_visivel)
         if not acerto_ia:
             numero_sorteado = random.randint(0, len(jogadas_disponiveis) - 1)
@@ -152,7 +156,7 @@ def ataque():
             
             if mapa_jogador_consulta[x][y] == 0:
                 mapa_jogador_visivel[x][y] = -1
-                print(f"IA jogou ({x}, {y}) e errou, tiro ao mar...")
+                print(f"IA jogou ({x + 1}, {y + 1}) e errou, tiro ao mar...")
             elif mapa_jogador_consulta[x][y] in [1, 2, 3, 4, 5, 6]:
                 mapa_jogador_visivel[x][y] = 7
                 verifica_acertos(mapa_jogador_consulta, (x, y), qtds_acertos_ia, qtds_navios_ia, "IA")
@@ -193,7 +197,7 @@ def ataque():
                         verifica_acertos(mapa_jogador_consulta, (x, y-1-deslocamento), qtds_acertos_ia, qtds_navios_ia, "IA")
                         deslocamento += 1
                     else:
-                        print(f"IA jogou ({x}, {y-1-deslocamento}) e errou, tiro ao mar...")
+                        print(f"IA jogou ({x+1}, {y-deslocamento}) e errou, tiro ao mar...")
                         mapa_jogador_visivel[x][y-1-deslocamento] = -1
                         deslocamento = 0
                         del lados_jogar[0]
@@ -204,7 +208,7 @@ def ataque():
                         verifica_acertos(mapa_jogador_consulta, (x, y+1+deslocamento), qtds_acertos_ia, qtds_navios_ia, "IA")
                         deslocamento += 1
                     else:
-                        print(f"IA jogou ({x}, {y+1+deslocamento}) e errou, tiro ao mar...")
+                        print(f"IA jogou ({x+1}, {y+2+deslocamento}) e errou, tiro ao mar...")
                         mapa_jogador_visivel[x][y+1+deslocamento] = -1
                         deslocamento = 0
                         del lados_jogar[0]
@@ -215,7 +219,7 @@ def ataque():
                         verifica_acertos(mapa_jogador_consulta, (x-1-deslocamento, y), qtds_acertos_ia, qtds_navios_ia, "IA")
                         deslocamento += 1
                     else:
-                        print(f"IA jogou ({x-1-deslocamento}, {y}) e errou, tiro ao mar...")
+                        print(f"IA jogou ({x-deslocamento}, {y+1}) e errou, tiro ao mar...")
                         mapa_jogador_visivel[x-1-deslocamento][y] = -1
                         deslocamento = 0
                         del lados_jogar[0]
@@ -226,7 +230,7 @@ def ataque():
                         verifica_acertos(mapa_jogador_consulta, (x+1+deslocamento, y), qtds_acertos_ia, qtds_navios_ia, "IA")
                         deslocamento += 1
                     else:
-                        print(f"IA jogou ({x+1+deslocamento}, {y}) e errou, tiro ao mar...")
+                        print(f"IA jogou ({x+2+deslocamento}, {y+1}) e errou, tiro ao mar...")
                         mapa_jogador_visivel[x+1+deslocamento][y] = -1
                         deslocamento = 0
                         del lados_jogar[0] 
@@ -234,30 +238,22 @@ def ataque():
             else:
                 print("aqui")
                 i+=1  
-    printa_mapa() """
+    printa_mapa()
 
 if __name__ == "__main__":
-    mapa_ia = None
-    mapa_pc = None
 
     with open("mapas.json", 'r') as file:
         dict_json = json.load(file)
         mapa_pc = dict_json['mapa_pc']
         mapa_ia = dict_json['mapa_ia']
-        #mapa_ia_visivel = dict_json['mapa_ia']
-        #mapa_pc_visivel = dict_json['mapa_pc'] """
-        
-    #pos = pega_posicoes_disponiveis(mapa_ia)
-    #print(len(pos))
-    #print(sorted(pos))
-
-    mapa_ia_consulta = deepcopy(mapa_ia)
-    mapa_jogador_consulta = deepcopy(mapa_pc)
-    #mapa_ia_visivel = deepcopy(mapa_ia)
-    #mapa_jogador_visivel = deepcopy(mapa_pc)
-         
+    
+        mapa_ia_consulta = deepcopy(mapa_ia)
+        mapa_jogador_consulta = deepcopy(mapa_pc)
+        #mapa_ia_visivel = deepcopy(mapa_ia)
+        #mapa_jogador_visivel = deepcopy(mapa_pc)
     #printa_mapa()
     i = 0
     while i < 1:
         ataque()
         i+=1
+      

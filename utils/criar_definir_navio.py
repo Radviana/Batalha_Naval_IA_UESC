@@ -10,7 +10,7 @@ def criar_navio(linha: int, coluna: int, coord_navio: list) -> np.ndarray:
     
     return navio
 
-def adicionar_navio(navio: np.array, coords: set or list, id_navio, mapa: np.array) -> np.array:
+def adicionar_navio(navio: np.array, coords: set or list, id_navio, mapa: np.array):
     """Posiciona o navio no mapa
     ship: O Navio a ser posicionado
     coords: coordenada X e Y
