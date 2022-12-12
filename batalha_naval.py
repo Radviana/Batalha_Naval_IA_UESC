@@ -240,6 +240,26 @@ def ataque():
                 i+=1  
     printa_mapa()
 
+def menu():
+    opt = 0
+    print("\t______         _           _  _               _   _                       _ ")
+    print("\t| ___ \       | |         | || |             | \ | |                     | |")
+    print("\t| |_/ /  __ _ | |_   __ _ | || |__    __ _   |  \| |  __ _ __   __  __ _ | |")
+    print("\t| ___ \ / _` || __| / _` || || '_ \  / _` |  | . ` | / _` |\ \ / / / _` || |")
+    print("\t| |_/ /| (_| || |_ | (_| || || | | || (_| |  | |\  || (_| | \ V / | (_| || |")
+    print("\t\____/  \__,_| \__| \__,_||_||_| |_| \__,_|  \_| \_/ \__,_|  \_/   \__,_||_|")
+    opt = int(input("\n\nAperte 1 para começar ou 2 para o computador começar: "))
+    while (opt!=1 or opt!=2):
+        if(opt==1):
+            #ataque do pc
+            break
+        elif(opt==2):
+            #ataque da ia
+            break
+        else:
+            print("Opção inválida.")
+            print("Aperte 1 para começar ou 2 para o computador começar: ")
+
 if __name__ == "__main__":
 
     with open("mapas.json", 'r') as file:
