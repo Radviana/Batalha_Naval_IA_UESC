@@ -1,3 +1,4 @@
+from abc import ABC
 import json
 # import time
 import random
@@ -10,8 +11,7 @@ def substitui_print(element):
     elif element == '7':
         element = acerto
     elif element not in ['1', '2', '3', '4', '5', '6']:
-        element = falha
-        
+        element = falha 
     return element
 
 def printa_navio(ship):
@@ -153,7 +153,7 @@ def ataque():
             numero_sorteado = np.random.randint(0, len(jogadas_disponiveis))
             x, y = jogadas_disponiveis[numero_sorteado]
             x, y = x-1, y-1
-            #x, y = 9, 0
+            x, y = 1, 8
             
             if mapa_jogador_consulta[x][y] == 0:
                 mapa_jogador_visivel[x][y] = -1
@@ -192,7 +192,7 @@ def ataque():
                 acerto_ia = False
                 deslocamento = 0
                 print('Acerto ia False')
-            elif navio_acertado in [1, 2, 3, 4, 5, 6]: # Verifica se é um dos návios base
+            elif navio_acertado in [1, 2, 3, 4, 5]: # Verifica se é um dos návios base
                 if lados_jogar[0] == 'esquerda' and y-1-deslocamento >= 0 and mapa_jogador_visivel[x][y-1-deslocamento] == 0:
                     if mapa_jogador_consulta[x][y-1-deslocamento] == navio_acertado:
                         mapa_jogador_visivel[x][y-1-deslocamento] = 7
@@ -234,15 +234,104 @@ def ataque():
                         deslocamento = 0
                         del lados_jogar[0] 
                 else:
-                    print("Aqui")
                     deslocamento = 0
                     del lados_jogar[0]
                 i+=1
-            else:
-                print("aqui")
-                acerto_ia = False
-                continue
-                i+=1  
+                
+                
+            else: # Verifica Hidro Aviões
+                print(lados_jogar)
+                if 'baixo' in lados_jogar and 'cima' not in lados_jogar: # _--_
+                    if 'direita' in lados_jogar and y+1 <= 9:
+                        if mapa_jogador_consulta[x+1][y+1] == navio_acertado and mapa_jogador_visivel[x+1][y+1] == 0:
+                            mapa_jogador_visivel[x+1][y+1] = 7
+                            verifica_acertos(mapa_jogador_consulta, (x+1, y+1), qtds_acertos_ia, qtds_navios_ia, "IA")
+                            lados_jogar.remove("direita")
+                        elif mapa_jogador_consulta[x+1][y+1] != navio_acertado and mapa_jogador_visivel[x+1][y+1] == 0:
+                            mapa_jogador_visivel[x+1][y+1] = -1
+                            print(f"IA jogou ({x+1}, {y+1}) e errou, tiro ao mar...")
+                            lados_jogar.remove("direita")            
+                    elif 'esquerda' in lados_jogar and y-1 >= 0:
+                        if mapa_jogador_consulta[x+1][y-1] == navio_acertado and mapa_jogador_visivel[x+1][y-1] == 0:
+                            mapa_jogador_visivel[x+1][y-1] = 7
+                            verifica_acertos(mapa_jogador_consulta, (x+1, y-1), qtds_acertos_ia, qtds_navios_ia, "IA")
+                            lados_jogar.remove("esquerda")
+                        elif mapa_jogador_consulta[x+1][y-1] != navio_acertado and mapa_jogador_visivel[x+1][y-1] == 0:
+                            mapa_jogador_visivel[x+1][y-1] = -1
+                            print(f"IA jogou ({x+1}, {y-1}) e errou, tiro ao mar...")
+                            lados_jogar.remove("esquerda")   
+                    else:
+                        lados_jogar.remove("baixo") 
+                         
+                elif 'cima' in lados_jogar and 'baixo' not in lados_jogar: # -_-
+                    print("cima e não baixo")
+                    if 'direita' in lados_jogar and y+1 <= 9:
+                        if mapa_jogador_consulta[x-1][y+1] == navio_acertado and mapa_jogador_visivel[x-1][y+1] == 0:
+                            mapa_jogador_visivel[x-1][y+1] = 7
+                            lados_jogar.remove("cima")
+                            lados_jogar.append("baixo")
+                            x, y = x-1, y+1
+                    elif 'esquerda' in lados_jogar and y-1 >= 0:
+                        if mapa_jogador_consulta[x-1][y-1] == navio_acertado and mapa_jogador_visivel[x-1][y-1] == 0:
+                            mapa_jogador_visivel[x-1][y-1] = 7
+                    else:
+                        lados_jogar.remove("cima")
+                        
+                elif 'cima' in lados_jogar and 'baixo' in lados_jogar:
+                    print("cima e baixo")
+                    if 'esquerda' in lados_jogar and 'direita' not in lados_jogar:
+                        cond_if_cima = mapa_jogador_consulta[x-1][y-1] == navio_acertado and mapa_jogador_visivel[x-1][y-1] == 0
+                        cond_if_baixo = mapa_jogador_consulta[x+1][y-1] == navio_acertado and mapa_jogador_visivel[x+1][y-1] == 0 
+                        
+                        if cond_if_cima:
+                            mapa_jogador_visivel[x-1][y-1] = 7
+                        elif cond_if_baixo:
+                            mapa_jogador_visivel[x+1][y-1] = 7
+                        else:
+                           lados_jogar.remove("esquerda") 
+                        
+                    elif 'direita' in lados_jogar and 'esquerda' not in lados_jogar:
+                        cond_if_cima = mapa_jogador_consulta[x-1][y-1] == navio_acertado and mapa_jogador_visivel[x-1][y-1] == 0
+                        cond_if_baixo = mapa_jogador_consulta[x+1][y-1] == navio_acertado and mapa_jogador_visivel[x+1][y-1] == 0 
+                        
+                        if cond_if_cima:
+                            mapa_jogador_visivel[x-1][y+1] = 7
+                        elif cond_if_baixo:
+                            mapa_jogador_visivel[x+1][y+1] = 7
+                        else:
+                           lados_jogar.remove("direita")
+                           
+                    elif 'direita' in lados_jogar and 'esquerda' in lados_jogar:
+                        cond_if_cima_esq = mapa_jogador_consulta[x-1][y-1] == navio_acertado and mapa_jogador_visivel[x-1][y-1] == 0
+                        cond_if_baixo_esq = mapa_jogador_consulta[x+1][y-1] == navio_acertado and mapa_jogador_visivel[x+1][y-1] == 0
+                        cond_if_cima_dir = mapa_jogador_consulta[x-1][y+1] == navio_acertado and mapa_jogador_visivel[x-1][y+1] == 0
+                        cond_if_baixo_dir = mapa_jogador_consulta[x+1][y+1] == navio_acertado and mapa_jogador_visivel[x+1][y+1] == 0
+                        
+                        if cond_if_cima_esq:
+                            mapa_jogador_visivel[x-1][y-1] = 7
+                            print("cima esquerda")
+                        elif cond_if_baixo_esq:
+                            mapa_jogador_visivel[x+1][y-1] = 7
+                            print("baixo esquerda")
+                        elif cond_if_cima_dir:
+                            mapa_jogador_visivel[x-1][y+1] = 7
+                            print("cima direita")
+                        elif cond_if_baixo_dir:
+                            mapa_jogador_visivel[x+1][y+1] = 7
+                            print("baixo direita")
+                        else:
+                            lados_jogar.remove("direita")
+                            lados_jogar.remove("esquerda")
+                    else:
+                        lados_jogar.remove("cima")
+                        lados_jogar.remove("baixo")
+                        
+                else:
+                    print("entrou aqui no else")
+                    acerto_ia = False
+                    deslocamento = 0
+                    lados_jogar = []
+                i+=1    
     printa_mapa()
 
 def menu():
