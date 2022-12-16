@@ -147,12 +147,13 @@ def ataque():
     
     print("\nVez da IA\n")  
     i = 0                 
-    while i < 20:
+    while i < 3:
         jogadas_disponiveis = pega_posicoes_disponiveis(mapa_jogador_visivel)
         if not acerto_ia:
-            numero_sorteado = random.randint(0, len(jogadas_disponiveis) - 1)
+            numero_sorteado = np.random.randint(0, len(jogadas_disponiveis))
             x, y = jogadas_disponiveis[numero_sorteado]
             x, y = x-1, y-1
+            #x, y = 9, 0
             
             if mapa_jogador_consulta[x][y] == 0:
                 mapa_jogador_visivel[x][y] = -1
@@ -183,13 +184,14 @@ def ataque():
                     lados_jogar = ['baixo', 'cima', 'direita', 'esquerda']
                     
                 posicao_acerto = (x, y)
-                navio_acertado = mapa_jogador_consulta[x][y]  
-                 
+                navio_acertado = mapa_jogador_consulta[x][y]     
             i+=1
         else:
             x, y = posicao_acerto
             if lados_jogar == []:
                 acerto_ia = False
+                deslocamento = 0
+                print('Acerto ia False')
             elif navio_acertado in [1, 2, 3, 4, 5, 6]: # Verifica se é um dos návios base
                 if lados_jogar[0] == 'esquerda' and y-1-deslocamento >= 0 and mapa_jogador_visivel[x][y-1-deslocamento] == 0:
                     if mapa_jogador_consulta[x][y-1-deslocamento] == navio_acertado:
@@ -201,7 +203,6 @@ def ataque():
                         mapa_jogador_visivel[x][y-1-deslocamento] = -1
                         deslocamento = 0
                         del lados_jogar[0]
-                    
                 elif lados_jogar[0] == 'direita' and y+1+deslocamento <= 9 and mapa_jogador_visivel[x][y+1+deslocamento] == 0:
                     if mapa_jogador_consulta[x][y+1+deslocamento] == navio_acertado:
                         mapa_jogador_visivel[x][y+1+deslocamento] = 7
@@ -212,7 +213,6 @@ def ataque():
                         mapa_jogador_visivel[x][y+1+deslocamento] = -1
                         deslocamento = 0
                         del lados_jogar[0]
-    
                 elif lados_jogar[0] == 'cima' and x-1-deslocamento >= 0 and mapa_jogador_visivel[x-1-deslocamento][y] == 0:
                     if mapa_jogador_consulta[x-1-deslocamento][y] == navio_acertado:
                         mapa_jogador_visivel[x-1-deslocamento][y] = 7
@@ -223,7 +223,6 @@ def ataque():
                         mapa_jogador_visivel[x-1-deslocamento][y] = -1
                         deslocamento = 0
                         del lados_jogar[0]
-                    
                 elif lados_jogar[0] == 'baixo' and x+1+deslocamento <= 9 and mapa_jogador_visivel[x+1+deslocamento][y] == 0:
                     if mapa_jogador_consulta[x+1+deslocamento][y] == navio_acertado:
                         mapa_jogador_visivel[x+1+deslocamento][y] = 7
@@ -234,9 +233,15 @@ def ataque():
                         mapa_jogador_visivel[x+1+deslocamento][y] = -1
                         deslocamento = 0
                         del lados_jogar[0] 
+                else:
+                    print("Aqui")
+                    deslocamento = 0
+                    del lados_jogar[0]
                 i+=1
             else:
                 print("aqui")
+                acerto_ia = False
+                continue
                 i+=1  
     printa_mapa()
 
