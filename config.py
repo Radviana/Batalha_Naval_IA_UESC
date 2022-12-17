@@ -76,4 +76,11 @@ posicao_acerto = None
 lados_jogar = []
 navio_acertado = None
 deslocamento = 0
-jogadas_descartadas = []
+
+acerto_cima_esq = False
+acerto_cima_dir = False
+acerto_baixo_esq = False
+acerto_baixo_dir = False
+
+navios_afundados = 0
+x, y = 0, 0
