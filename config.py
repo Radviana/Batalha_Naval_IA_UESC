@@ -69,6 +69,8 @@ qtds_acertos_ia = [acertos_submarino_ia, acertos_corveta_ia, acertos_fragata_ia,
 
 # Limites acertos navios
 limite_acertos = [1, 2, 3, 4, 5, 3]
+jogadas_jogador = []
+jogadas_ia = []
 
 # Variáveis IA
 acerto_ia = False
