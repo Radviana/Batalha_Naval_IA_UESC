@@ -91,9 +91,8 @@ def pega_posicoes_disponiveis(mapa):
                     tmp_mapa = adicionar_navio(tipo_navio, (i, j), id_navio, mapa)
                     
                     if not np.array_equal(tmp_mapa, mapa):
-                        posicoes_vazias.add((i, j))
-                        
-    return sorted(list(posicoes_vazias))
+                        posicoes_vazias.add((i, j))                   
+    return list(posicoes_vazias)
 
 def verifica_acertos(mapa_consulta, coords, qtds_acertos, qtds_navios, nome_jogador):
     global lados_jogar, jogadas_ia, jogadas_jogador, navios_afundados_ia
@@ -110,7 +109,6 @@ def verifica_acertos(mapa_consulta, coords, qtds_acertos, qtds_navios, nome_joga
         print(f"{nome_jogador} jogou ({x + 1}, {y + 1}) e derrubou um {nomes_navios[mapa_consulta[x][y] - 1]}")
         qtds_navios[mapa_consulta[x][y] - 1] -= 1
         qtds_acertos[mapa_consulta[x][y] - 1] = 0
-        
         
         if nome_jogador.lower() == "ia":
             lados_jogar = []
@@ -155,7 +153,7 @@ def ataque():
     global acerto_baixo_dir, acerto_baixo_esq, acerto_cima_dir, acerto_cima_esq, acerto_hidro_aviao
     global x,y
     
-    printa_mapa()
+    """ printa_mapa()
     print("Vez do jogador, Faça 3 ataques: ")
     for i in range(3):
         while True:
@@ -180,7 +178,7 @@ def ataque():
                 break
             else:
                 printa_mapa()
-                print("Jogada Invalida, repita a jogada...")
+                print("Jogada Invalida, repita a jogada...") """
     
     print("\n-------------VEZ DA IA----------------")  
     i = 0                 
@@ -193,7 +191,7 @@ def ataque():
             numero_sorteado = np.random.randint(0, len(jogadas_disponiveis))
             x, y = jogadas_disponiveis[numero_sorteado]
             x, y = x-1, y-1
-            
+
             if mapa_jogador_consulta[x][y] == 0:
                 mapa_jogador_visivel[x][y] = -1
                 print(f"IA jogou ({x + 1}, {y + 1}) e errou, tiro ao mar...")
@@ -212,7 +210,6 @@ def ataque():
                 navio_acertado = mapa_jogador_consulta[x][y]     
             i+=1
         else:
-            """ if not acerto_cima_esq and not acerto_baixo_esq and not acerto_cima_dir and not acerto_baixo_dir: """
             x, y = posicao_acerto
             if lados_jogar == []:
                 acerto_ia = False
@@ -262,7 +259,7 @@ def ataque():
                         del lados_jogar[0] 
                 else:
                     deslocamento = 0
-                    lados_jogar = []
+                    del lados_jogar[0]
                 i+=1
                 
              # Verifica Hidro Aviões      
@@ -325,7 +322,8 @@ def ataque():
                         print(f"IA jogou ({x}, {y}) e errou, tiro ao mar...")    
                     else:
                         lados_jogar.remove("esquerda")
-                  
+                        
+                    i+=1
                 # Outros lados        
                 elif qtds_acertos_ia[5] == 2:
                     # Baixo
@@ -369,7 +367,8 @@ def ataque():
                         print(f"IA jogou ({x+1}, {y+1}) e errou, tiro ao mar...")
                         
                     else:
-                        qtds_acertos_ia[5] = 0   
+                        qtds_acertos_ia[5] = 0  
+                    i+=1   
                 else:
                     lados_jogar = []
                     acerto_hidro_aviao = False        
@@ -406,9 +405,13 @@ if __name__ == "__main__":
         mapa_pc = dict_json['mapa_pc']
         mapa_ia = dict_json['mapa_ia']
     
-        #mapa_ia_consulta = deepcopy(mapa_ia)
-        #mapa_jogador_consulta = deepcopy(mapa_pc)
+        mapa_ia_consulta = deepcopy(mapa_ia)
+        mapa_jogador_consulta = deepcopy(mapa_pc)
     
     #interface_colocar_navios()   
-    
+    for i in range(20):
+        ataque()
     printa_mapa()
+    print(navios_afundados_ia)
+
+    #mapa_jogador_visivel = adicionar_navio(porta_avioes[0], (1, 1), 5, mapa_jogador_visivel)
