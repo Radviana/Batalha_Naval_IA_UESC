@@ -322,6 +322,7 @@ def ataque():
                     else:
                         lados_jogar.remove("esquerda")   
                 else:
+                    lados_jogar = []
                     acerto_hidro_aviao = False        
                 """ elif qtds_acertos_ia[5] == 2 and x+2 <= 9:
                     if mapa_jogador_consulta[x+2][y] == navio_acertado and mapa_jogador_visivel[x+2][y] == 0:
