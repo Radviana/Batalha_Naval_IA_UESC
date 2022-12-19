@@ -357,11 +357,11 @@ def ataque():
                         print(f"IA jogou ({x+1}, {y+3}) e errou, tiro ao mar...")
                         
                     # esquerda
-                    elif y-2 <= 9 and mapa_jogador_consulta[x][y-2] == navio_acertado and mapa_jogador_visivel[x][y-2] == 0 \
+                    elif y-2 >= 0 and mapa_jogador_consulta[x][y-2] == navio_acertado and mapa_jogador_visivel[x][y-2] == 0 \
                     and not acerto_baixo_dir and not acerto_cima_dir:
                         mapa_jogador_visivel[x][y-2] = 7
                         verifica_acertos(mapa_jogador_consulta, (x, y-2), qtds_acertos_ia, qtds_navios_ia, "IA")
-                    elif y-2 <= 9 and mapa_jogador_consulta[x][y-2] != navio_acertado and mapa_jogador_visivel[x][y-2] == 0 \
+                    elif y-2 >= 0 and mapa_jogador_consulta[x][y-2] != navio_acertado and mapa_jogador_visivel[x][y-2] == 0 \
                     and not acerto_baixo_dir and not acerto_cima_dir:
                         mapa_jogador_visivel[x][y-2] = -1
                         print(f"IA jogou ({x+1}, {y+1}) e errou, tiro ao mar...")
