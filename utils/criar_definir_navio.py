@@ -23,39 +23,39 @@ def adicionar_navio(navio: np.array, coords: set or list, id_navio, mapa: np.arr
     ship: O Navio a ser posicionado
     coords: coordenada X e Y
     mapa: o mapa"""
-    coord_x, coord_y = coords
+    coord_x, coord_y = coords # 1 1 -> 0, 0
     tmp_mapa = deepcopy(mapa)
     tipo_hidro_aviao = pega_tipo_hidro_aviao(navio)
     deslocamentos = {'esq': [(1, 0), (0, -1), (0, 0), (1, -1)],
                'dir': [(1, 0), (0, -1), (1, -1), (0, 0)]}
     
-    desl_inf_esq = desl_sup_esq = desl_inf_dir = desl_sup_dir = 0
+    desl_inf_esq, desl_sup_esq, desl_inf_dir, desl_sup_dir = (0, 0, 0, 0)
     
     if id_navio == 6:
         temp_esq = deslocamentos['esq']
         temp_dir = deslocamentos['dir']
         desl_inf_esq, desl_sup_esq = temp_esq[tipo_hidro_aviao]
         desl_inf_dir, desl_sup_dir = temp_dir[tipo_hidro_aviao]
-    
+        
     # Verifica Esquerda do návio verificando se tem barco perto ou não
-    for linha in range(coord_x - 1 + desl_inf_esq, navio.shape[0] + coord_x + desl_sup_esq): #0, 4
+    for linha in range(coord_x - 2 + desl_inf_esq, navio.shape[0] + coord_x + desl_sup_esq): #0, 4
         if 0 <= coord_y - 2 <= 9 and 0 <= linha <= 9 and mapa[linha][coord_y - 2] not in [0, -1]:
-            # print("tem navio na esquerda")  
+            print("tem navio na esquerda")  
             return mapa
         
-     # Verifica direita do návio verificando se tem barco perto ou não    
-    for linha in range(coord_x - 1 + desl_inf_dir, navio.shape[0] + coord_x + desl_sup_dir):
+    # Verifica direita do návio verificando se tem barco perto ou não    
+    for linha in range(coord_x - 2 + desl_inf_dir, navio.shape[0] + coord_x + desl_sup_dir):
         if coord_y + navio.shape[1] - 1 <= 9 and 0 <= linha <= 9 and mapa[linha][coord_y + navio.shape[1] - 1] not in [0, -1]:
-            # print("tem navio na direita")
+            print("tem navio na direita")
             return mapa
          
     # Verifica cima e baixo do návio verificando se tem barco perto ou não
-    for coluna in range(coord_y - 1, navio.shape[1] + coord_y):
+    for coluna in range(coord_y - 2, navio.shape[1] + coord_y):
         if 0 <= coord_x - 2 <= 9 and 0 <= coluna <= 9 and mapa[coord_x - 2][coluna] not in [0, -1]:
-            # print("tem navio em cima")  
+            print("tem navio em cima")  
             return mapa
         if 0 <= coord_x + navio.shape[0] - 1 <= 9 and 0 <= coluna <= 9 and mapa[coord_x + navio.shape[0] - 1][coluna] not in [0, -1]: 
-            # print("tem navio em baixo")
+            print("tem navio em baixo")
             return mapa
 
     # Poem navio no mapa temporário

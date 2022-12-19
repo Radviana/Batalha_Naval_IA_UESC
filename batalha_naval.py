@@ -46,35 +46,35 @@ def printa_mapa() -> None:
         print(f"{linha + 1}{espaco}|{tmp_ia}  || {tmp_jogador} |")
     print("   ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯")
     
-def interface_colocar_navios(mapa, qtd_navios):
+def interface_colocar_navios():
     navios = [submarino, corvetas, fragatas, cruzadores, porta_avioes, hidro_avioes]
     id_navios = [1, 2, 3, 4, 5, 6]
-    
-    for i in len(navios):
+    global qtds_navios_jogador, mapa_jogador_consulta
+  
+    for i in range(len(navios)):
         op = -1
         while True:
-            print(f"Colocando {nomes_navios}...")
+            print(f"Colocando {nomes_navios[i]}...")
             x_navio = int(input(f"Digite a posicão X do {nomes_navios[i]}: "))
             y_navio = int(input(f"Digite a posicão Y do {nomes_navios[i]}: "))
             orientacao_navio = int(input(f"Digite a orientação do {nomes_navios[i]}: "))
-            print(f"X = {x_navio}")
-            print(f"Y = {y_navio}")
-            print(f"orientação = {orientacao_navio}")
-            print(f"Navio = {navios[orientacao_navio]}")
             
-            tmp_map = deepcopy(mapa)
-            mapa = adicionar_navio(navios[orientacao_navio], (x_navio, y_navio), id_navios[i], mapa)
+            tmp_mapa = deepcopy(mapa_jogador_consulta)
+            tmp_mapa = adicionar_navio(navios[i][orientacao_navio], (x_navio, y_navio), id_navios[i], mapa_jogador_consulta)
             
             # Incrementa a quantidade de determinado návio no mapa
-            if mapa != tmp_map:
-                qtd_navios[i] += 1
+            if not np.array_equal(tmp_mapa, mapa_jogador_consulta):
+                qtds_navios_jogador[i] += 1
+                print(f"\nFoi adicionado um {nomes_navios[i]} na posição ({x_navio}, {y_navio}).")
+                mapa_jogador_consulta = tmp_mapa
+            else:
+                print(f"\nErro ao adicionar o {nomes_navios[i]} na posição ({x_navio}, {y_navio}).")
             
             op = input("Digite 0 para Sair e qualquer outra tecla para continuar: ")
             print()
             
             if op == '0':
                 break  
-    return mapa
      
 def pega_posicoes_disponiveis(mapa):
     posicoes_vazias = set()
@@ -184,7 +184,7 @@ def ataque():
     
     print("\n-------------VEZ DA IA----------------")  
     i = 0                 
-    while i < 6:
+    while i < 3:
         jogadas_disponiveis = pega_posicoes_disponiveis(mapa_jogador_visivel)
         if len(jogadas_disponiveis) == 0:
             print("entrou aqui, numero de jogadas = ", len(jogadas_disponiveis))
@@ -192,8 +192,7 @@ def ataque():
         if not acerto_ia:
             numero_sorteado = np.random.randint(0, len(jogadas_disponiveis))
             x, y = jogadas_disponiveis[numero_sorteado]
-            #x, y = x-1, y-1
-            x, y = 2, 2
+            x, y = x-1, y-1
             
             if mapa_jogador_consulta[x][y] == 0:
                 mapa_jogador_visivel[x][y] = -1
@@ -388,10 +387,14 @@ def menu():
     opt = int(input("\n\nAperte 1 para começar ou 2 para o computador começar: "))
     while (opt!=1 or opt!=2):
         if(opt==1):
-            #ataque do pc
+            #Escolher quem vai atacar primeiro
+            # Iniciar Jogo (Ataque)
             break
         elif(opt==2):
-            #ataque da ia
+            # Definir Mapa Jogador
+            break
+        elif(opt==3):
+            # Mostrar Mapas
             break
         else:
             print("Opção inválida.")
@@ -403,10 +406,9 @@ if __name__ == "__main__":
         mapa_pc = dict_json['mapa_pc']
         mapa_ia = dict_json['mapa_ia']
     
-        mapa_ia_consulta = deepcopy(mapa_ia)
-        mapa_jogador_consulta = deepcopy(mapa_pc)
-     
-    mapa_jogador_consulta = interface_colocar_navios(mapa_jogador_consulta, qtds_navios_jogador)   
+        #mapa_ia_consulta = deepcopy(mapa_ia)
+        #mapa_jogador_consulta = deepcopy(mapa_pc)
+    
+    #interface_colocar_navios()   
+    
     printa_mapa()
-
-       
