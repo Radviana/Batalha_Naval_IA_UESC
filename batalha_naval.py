@@ -191,7 +191,7 @@ def ataque():
             numero_sorteado = np.random.randint(0, len(jogadas_disponiveis))
             x, y = jogadas_disponiveis[numero_sorteado]
             #x, y = x-1, y-1
-            x, y = 0, 4
+            x, y = 0, 8
             
             if mapa_jogador_consulta[x][y] == 0:
                 mapa_jogador_visivel[x][y] = -1
@@ -505,7 +505,7 @@ if __name__ == "__main__":
 
     with open("mapas.json", 'r') as file:
         dict_json = json.load(file)
-        mapa_pc = dict_json['mapa_aux0']
+        mapa_pc = dict_json['mapa_pc']
         mapa_ia = dict_json['mapa_ia']
     
         mapa_ia_consulta = deepcopy(mapa_ia)

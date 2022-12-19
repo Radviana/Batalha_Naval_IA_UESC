@@ -79,6 +79,7 @@ lados_jogar = []
 navio_acertado = None
 deslocamento = 0
 
+acerto_hidro_aviao = False
 acerto_cima_esq = False
 acerto_cima_dir = False
 acerto_baixo_esq = False
