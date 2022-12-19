@@ -8,7 +8,6 @@ barco = '1' # '^'
 
 # Variáveis MAPA
 tamanho = 10
-vida_jog , vida_ia = (45, 45)
 
 mapa_ia_consulta = np.zeros((tamanho, tamanho), dtype=int) # Consulta
 mapa_jogador_consulta = np.zeros((tamanho, tamanho), dtype=int) # Consulta
@@ -28,12 +27,12 @@ hidro_avioes = [criar_navio(2, 3, [2, 4, 6]), criar_navio(2, 3, [1, 3, 5]), cria
 nomes_navios = ['Submarino', 'Corveta','Fragata', 'Cruzador', 'Porta Avião', 'Hidro Avião']
 
 # Quantidades de navios jogador
-qtd_submarino_jogador = 3
-qtd_corveta_jogador = 2
-qtd_fragata_jogador = 3
-qtd_cruzador_jogador = 1 
-qtd_porta_aviao_jogador = 1
-qtd_hidro_aviao_jogador = 2
+qtd_submarino_jogador = 0
+qtd_corveta_jogador = 0
+qtd_fragata_jogador = 0
+qtd_cruzador_jogador = 0 
+qtd_porta_aviao_jogador = 0
+qtd_hidro_aviao_jogador = 0
 qtds_navios_jogador = [qtd_submarino_jogador, qtd_corveta_jogador, qtd_fragata_jogador, qtd_cruzador_jogador, 
                       qtd_porta_aviao_jogador, qtd_hidro_aviao_jogador]
 
@@ -85,5 +84,6 @@ acerto_cima_dir = False
 acerto_baixo_esq = False
 acerto_baixo_dir = False
 
-navios_afundados = 0
+navios_afundados_jogador = 0
+navios_afundados_ia = 0
 x, y = 0, 0

@@ -73,8 +73,7 @@ def interface_colocar_navios(mapa, qtd_navios):
             print()
             
             if op == '0':
-                break
-      
+                break  
     return mapa
      
 def pega_posicoes_disponiveis(mapa):
@@ -97,7 +96,7 @@ def pega_posicoes_disponiveis(mapa):
     return sorted(list(posicoes_vazias))
 
 def verifica_acertos(mapa_consulta, coords, qtds_acertos, qtds_navios, nome_jogador):
-    global lados_jogar, jogadas_ia, jogadas_jogador, navios_afundados
+    global lados_jogar, jogadas_ia, jogadas_jogador, navios_afundados_ia
     x, y = coords
     
     if nome_jogador.lower() == "ia" and (x, y) not in jogadas_ia:
@@ -111,10 +110,13 @@ def verifica_acertos(mapa_consulta, coords, qtds_acertos, qtds_navios, nome_joga
         print(f"{nome_jogador} jogou ({x + 1}, {y + 1}) e derrubou um {nomes_navios[mapa_consulta[x][y] - 1]}")
         qtds_navios[mapa_consulta[x][y] - 1] -= 1
         qtds_acertos[mapa_consulta[x][y] - 1] = 0
-        navios_afundados +=1
+        
         
         if nome_jogador.lower() == "ia":
             lados_jogar = []
+            navios_afundados_ia +=1
+        elif nome_jogador.lower() == 'jogador':
+            navios_afundados_jogador +=1
     else:
         print(f"{nome_jogador} jogou ({x + 1}, {y + 1}) e acertou uma parte de uma {nomes_navios[mapa_consulta[x][y] - 1]}")
         
@@ -150,10 +152,10 @@ def ataque():
     global posicao_acerto
     global navio_acertado
     global qtds_acertos_ia, qtds_acertos_jogador
-    global acerto_baixo_dir, acerto_baixo_esq, acerto_cima_dir, acerto_cima_esq
+    global acerto_baixo_dir, acerto_baixo_esq, acerto_cima_dir, acerto_cima_esq, acerto_hidro_aviao
     global x,y
     
-    """ printa_mapa()
+    printa_mapa()
     print("Vez do jogador, Faça 3 ataques: ")
     for i in range(3):
         while True:
@@ -178,11 +180,11 @@ def ataque():
                 break
             else:
                 printa_mapa()
-                print("Jogada Invalida, repita a jogada...") """
+                print("Jogada Invalida, repita a jogada...")
     
     print("\n-------------VEZ DA IA----------------")  
     i = 0                 
-    while i < 5:
+    while i < 6:
         jogadas_disponiveis = pega_posicoes_disponiveis(mapa_jogador_visivel)
         if len(jogadas_disponiveis) == 0:
             print("entrou aqui, numero de jogadas = ", len(jogadas_disponiveis))
@@ -191,7 +193,7 @@ def ataque():
             numero_sorteado = np.random.randint(0, len(jogadas_disponiveis))
             x, y = jogadas_disponiveis[numero_sorteado]
             #x, y = x-1, y-1
-            x, y = 0, 8
+            x, y = 2, 2
             
             if mapa_jogador_consulta[x][y] == 0:
                 mapa_jogador_visivel[x][y] = -1
@@ -263,222 +265,116 @@ def ataque():
                     deslocamento = 0
                     lados_jogar = []
                 i+=1
-                 
-            else: # Verifica Hidro Aviões  
-                if 'baixo' in lados_jogar and 'cima' not in lados_jogar: # Baixo e não cima
-                    print("baixo e não cima")
-                    if 'direita' in lados_jogar and y+1 <= 9:
-                        if mapa_jogador_consulta[x+1][y+1] == navio_acertado and mapa_jogador_visivel[x+1][y+1] == 0:
-                            mapa_jogador_visivel[x+1][y+1] = 7
-                            verifica_acertos(mapa_jogador_consulta, (x+1, y+1), qtds_acertos_ia, qtds_navios_ia, "IA")
-                            if "direita" in lados_jogar: 
-                                lados_jogar.remove("direita")
-                        elif mapa_jogador_consulta[x+1][y+1] != navio_acertado and mapa_jogador_visivel[x+1][y+1] == 0:
-                            mapa_jogador_visivel[x+1][y+1] = -1
-                            print(f"IA jogou ({x+1}, {y+1}) e errou, tiro ao mar...")
-                            if "direita" in lados_jogar: 
-                                lados_jogar.remove("direita")         
-                    elif 'esquerda' in lados_jogar and y-1 >= 0:
-                        if mapa_jogador_consulta[x+1][y-1] == navio_acertado and mapa_jogador_visivel[x+1][y-1] == 0:
-                            mapa_jogador_visivel[x+1][y-1] = 7
-                            verifica_acertos(mapa_jogador_consulta, (x+1, y-1), qtds_acertos_ia, qtds_navios_ia, "IA")
-                            if "esquerda" in lados_jogar: 
-                                lados_jogar.remove("esquerda")
-                        elif mapa_jogador_consulta[x+1][y-1] != navio_acertado and mapa_jogador_visivel[x+1][y-1] == 0:
-                            mapa_jogador_visivel[x+1][y-1] = -1
-                            print(f"IA jogou ({x+1}, {y-1}) e errou, tiro ao mar...")
-                            if "esquerda" in lados_jogar: 
-                                lados_jogar.remove("esquerda")
-                    elif qtds_acertos_ia[5] == 2 and x+2 <= 9:
-                        if mapa_jogador_consulta[x+2][y] == navio_acertado and mapa_jogador_visivel[x+2][y] == 0:
-                            mapa_jogador_visivel[x+2][y] = 7
-                            verifica_acertos(mapa_jogador_consulta, (x+2, y), qtds_acertos_ia, qtds_navios_ia, "IA")
-                            if "baixo" in lados_jogar: 
-                                lados_jogar.remove("baixo")
-                        elif mapa_jogador_consulta[x+2][y] != navio_acertado and mapa_jogador_visivel[x+2][y] == 0:
-                            mapa_jogador_visivel[x+2][y] = -1
-                            print(f"IA jogou ({x+2}, {y}) e errou, tiro ao mar...")
-                            if "baixo" in lados_jogar: 
-                                lados_jogar.remove("baixo") 
+                
+             # Verifica Hidro Aviões      
+            else: 
+                if 'direita' in lados_jogar:
+                    # Direita inferior
+                    if x+1 <= 9 and mapa_jogador_consulta[x+1][y+1] == navio_acertado and mapa_jogador_visivel[x+1][y+1] == 0 \
+                    and not acerto_cima_esq:
+                        mapa_jogador_visivel[x+1][y+1] = 7
+                        verifica_acertos(mapa_jogador_consulta, (x+1, y+1), qtds_acertos_ia, qtds_navios_ia, "IA")
+                        if not acerto_hidro_aviao:
+                            acerto_baixo_dir = True
+                            acerto_hidro_aviao = True
+                    elif x+1 <= 9 and mapa_jogador_consulta[x+1][y+1] != navio_acertado and mapa_jogador_visivel[x+1][y+1] == 0 \
+                    and not acerto_cima_esq:
+                        mapa_jogador_visivel[x+1][y+1] = -1
+                        print(f"IA jogou ({x+2}, {y+2}) e errou, tiro ao mar...")  
+                            
+                    # Direita Superior
+                    elif x-1 >= 0 and mapa_jogador_consulta[x-1][y+1] == navio_acertado and mapa_jogador_visivel[x-1][y+1] == 0 \
+                    and not acerto_baixo_esq:
+                        mapa_jogador_visivel[x-1][y+1] = 7
+                        verifica_acertos(mapa_jogador_consulta, (x-1, y+1), qtds_acertos_ia, qtds_navios_ia, "IA")
+                        if not acerto_hidro_aviao:
+                            acerto_cima_dir = True
+                            acerto_hidro_aviao = True
+                    elif x-1 >= 0 and mapa_jogador_consulta[x-1][y+1] != navio_acertado and mapa_jogador_visivel[x-1][y+1] == 0 \
+                    and not acerto_baixo_esq:
+                        mapa_jogador_visivel[x-1][y+1] = -1
+                        print(f"IA jogou ({x}, {y+2}) e errou, tiro ao mar...")
                     else:
-                        lados_jogar = []
-                         
-                elif 'cima' in lados_jogar and 'baixo' not in lados_jogar: # Cima e não baixo
-                    print("cima e não baixo")
-                    if 'direita' in lados_jogar and y+1 <= 9:
-                        if mapa_jogador_consulta[x-1][y+1] == navio_acertado and mapa_jogador_visivel[x-1][y+1] == 0:
-                            mapa_jogador_visivel[x-1][y+1] = 7
-                            verifica_acertos(mapa_jogador_consulta, (x-1, y+1), qtds_acertos_ia, qtds_navios_ia, "IA")
-                            if "direita" in lados_jogar: 
-                                lados_jogar.remove("direita")
-                        elif mapa_jogador_consulta[x-1][y+1] != navio_acertado and mapa_jogador_visivel[x-1][y+1] == 0:
-                            mapa_jogador_visivel[x-1][y+1] = -1
-                            print(f"IA jogou ({x-1}, {y+1}) e errou, tiro ao mar...")
-                            if "direita" in lados_jogar: 
-                                lados_jogar.remove("direita")
-                    elif 'esquerda' in lados_jogar and y-1 >= 0:
-                        if mapa_jogador_consulta[x-1][y-1] == navio_acertado and mapa_jogador_visivel[x-1][y-1] == 0:
-                            mapa_jogador_visivel[x-1][y-1] = 7
-                            verifica_acertos(mapa_jogador_consulta, (x-1, y-1), qtds_acertos_ia, qtds_navios_ia, "IA")
-                            if "esquerda" in lados_jogar: 
-                                lados_jogar.remove("esquerda")
-                        elif mapa_jogador_consulta[x-1][y-1] != navio_acertado and mapa_jogador_visivel[x-1][y-1] == 0:
-                            mapa_jogador_visivel[x-1][y-1] = -1
-                            print(f"IA jogou ({x-1}, {y-1}) e errou, tiro ao mar...")
-                            if "esquerda" in lados_jogar: 
-                                lados_jogar.remove("esquerda")  
-                    elif qtds_acertos_ia[5] == 2 and x-2 >= 0:
-                        if mapa_jogador_consulta[x-2][y] == navio_acertado and mapa_jogador_visivel[x-2][y] == 0:
-                            mapa_jogador_visivel[x-2][y] = 7
-                            verifica_acertos(mapa_jogador_consulta, (x-2, y), qtds_acertos_ia, qtds_navios_ia, "IA")
-                            if "cima" in lados_jogar: 
-                                lados_jogar.remove("cima") 
-                        elif mapa_jogador_consulta[x-2][y] != navio_acertado and mapa_jogador_visivel[x-2][y] == 0:
-                            mapa_jogador_visivel[x-2][y] = -1
-                            print(f"IA jogou ({x-2}, {y}) e errou, tiro ao mar...")
-                            if "cima" in lados_jogar: 
-                                lados_jogar.remove("cima")
-                    else:
-                        lados_jogar = []
+                        lados_jogar.remove("direita") 
                         
-                elif 'cima' in lados_jogar and 'baixo' in lados_jogar:
-                    if 'esquerda' in lados_jogar and 'direita' not in lados_jogar and y-1>= 0:
-                        if mapa_jogador_consulta[x-1][y-1] == navio_acertado and mapa_jogador_visivel[x-1][y-1] == 0:
-                            mapa_jogador_visivel[x-1][y-1] = 7
-                            verifica_acertos(mapa_jogador_consulta, (x-1, y-1), qtds_acertos_ia, qtds_navios_ia, "IA")
-                        elif mapa_jogador_consulta[x-1][y-1] != navio_acertado and mapa_jogador_visivel[x-1][y-1] == 0:
-                            mapa_jogador_visivel[x-1][y-1] = -1
-                            print(f"IA jogou ({x}, {y}) e errou, tiro ao mar...")
-                        elif mapa_jogador_consulta[x+1][y-1] == navio_acertado and mapa_jogador_visivel[x+1][y-1] == 0:
-                            mapa_jogador_visivel[x+1][y-1] = 7
-                            verifica_acertos(mapa_jogador_consulta, (x+1, y-1), qtds_acertos_ia, qtds_navios_ia, "IA")
-                        elif mapa_jogador_consulta[x+1][y-1] != navio_acertado and mapa_jogador_visivel[x+1][y-1] == 0:
-                            mapa_jogador_visivel[x+1][y-1] = -1
-                            print(f"IA jogou ({x+2}, {y}) e errou, tiro ao mar...")
-                        elif qtds_acertos_ia[5] == 2:
-                            if x-2>=0 and mapa_jogador_visivel[x-1][y-1] == 7 and mapa_jogador_consulta[x-2][y] == navio_acertado\
-                            and mapa_jogador_visivel[x-2][y] == 0:
-                                mapa_jogador_visivel[x-2][y] = 7
-                                verifica_acertos(mapa_jogador_consulta, (x-2, y), qtds_acertos_ia, qtds_navios_ia, "IA") 
-                            elif x-2>=0 and mapa_jogador_visivel[x-1][y-1] == 7 and mapa_jogador_consulta[x-2][y] != navio_acertado \
-                            and mapa_jogador_visivel[x-2][y] == 0:
-                                mapa_jogador_visivel[x-2][y] = -1
-                                print(f"IA jogou ({x-1}, {y+1}) e errou, tiro ao mar...")
-                            elif y-2>=0 and mapa_jogador_consulta[x][y-2] == navio_acertado and mapa_jogador_visivel[x][y-2] == 0:
-                                mapa_jogador_visivel[x][y-2] = 7
-                                verifica_acertos(mapa_jogador_consulta, (x, y-2), qtds_acertos_ia, qtds_navios_ia, "IA") 
-                            elif y-2>=0 and mapa_jogador_consulta[x][y-2] != navio_acertado and mapa_jogador_visivel[x][y-2] == 0:
-                                mapa_jogador_visivel[x][y-2] = -1
-                                print(f"IA jogou ({x+1}, {y-1}) e errou, tiro ao mar...")
-                            elif x+2 <=9 and mapa_jogador_consulta[x+2][y] == navio_acertado and mapa_jogador_visivel[x+2][y] == 0:
-                                mapa_jogador_visivel[x+2][y] = 7
-                                verifica_acertos(mapa_jogador_consulta, (x+2, y), qtds_acertos_ia, qtds_navios_ia, "IA") 
-                            elif x+2 <=9 and mapa_jogador_consulta[x+2][y] != navio_acertado and mapa_jogador_visivel[x+2][y] == 0:
-                                mapa_jogador_visivel[x+2][y] = -1
-                                print(f"IA jogou ({x+3}, {y+1}) e errou, tiro ao mar...")
-                        else:
-                            lados_jogar = [] 
-                        
-                    elif 'direita' in lados_jogar and 'esquerda' not in lados_jogar and y+1 >= 0:
-                        if mapa_jogador_consulta[x-1][y+1] == navio_acertado and mapa_jogador_visivel[x-1][y+1] == 0:
-                            mapa_jogador_visivel[x-1][y+1] = 7
-                            verifica_acertos(mapa_jogador_consulta, (x-1, y+1), qtds_acertos_ia, qtds_navios_ia, "IA")
-                        elif mapa_jogador_consulta[x-1][y+1] != navio_acertado and mapa_jogador_visivel[x-1][y+1] == 0:
-                            mapa_jogador_visivel[x-1][y+1] = -1
-                            print(f"IA jogou ({x}, {y+2}) e errou, tiro ao mar...")
-                        elif mapa_jogador_consulta[x+1][y+1] == navio_acertado and mapa_jogador_visivel[x+1][y+1] == 0:
-                            mapa_jogador_visivel[x+1][y+1] = 7
-                            verifica_acertos(mapa_jogador_consulta, (x+1, y+1), qtds_acertos_ia, qtds_navios_ia, "IA")
-                        elif mapa_jogador_consulta[x+1][y+1] != navio_acertado and mapa_jogador_visivel[x+1][y+1] == 0:
-                            mapa_jogador_visivel[x+1][y+1] = -1
-                            print(f"IA jogou ({x+2}, {y+2}) e errou, tiro ao mar...")
-                        elif qtds_acertos_ia[5] == 2:
-                            if x-2>=0 and mapa_jogador_visivel[x-1][y+1] == 7 and mapa_jogador_consulta[x-2][y] == navio_acertado\
-                            and mapa_jogador_visivel[x-2][y] == 0:
-                                mapa_jogador_visivel[x-2][y] = 7
-                                verifica_acertos(mapa_jogador_consulta, (x-2, y), qtds_acertos_ia, qtds_navios_ia, "IA") 
-                            elif x-2>=0 and mapa_jogador_visivel[x-1][y+1] == 7 and mapa_jogador_consulta[x-2][y] != navio_acertado \
-                            and mapa_jogador_visivel[x-2][y] == 0:
-                                mapa_jogador_visivel[x-2][y] = -1
-                                print(f"IA jogou ({x-1}, {y+1}) e errou, tiro ao mar...")
-                            elif y+2>=0 and mapa_jogador_consulta[x][y+2] == navio_acertado and mapa_jogador_visivel[x][y+2] == 0:
-                                mapa_jogador_visivel[x][y+2] = 7
-                                verifica_acertos(mapa_jogador_consulta, (x, y+2), qtds_acertos_ia, qtds_navios_ia, "IA") 
-                            elif y+2>=0 and mapa_jogador_consulta[x][y+2] != navio_acertado and mapa_jogador_visivel[x][y+2] == 0:
-                                mapa_jogador_visivel[x][y+2] = -1
-                                print(f"IA jogou ({x+1}, {y+3}) e errou, tiro ao mar...") 
-                            elif x+2 <=9 and mapa_jogador_consulta[x+2][y] == navio_acertado and mapa_jogador_visivel[x+2][y] == 0:
-                                mapa_jogador_visivel[x+2][y] = 7
-                                verifica_acertos(mapa_jogador_consulta, (x+2, y), qtds_acertos_ia, qtds_navios_ia, "IA") 
-                            elif x+2 <=9 and mapa_jogador_consulta[x+2][y] != navio_acertado and mapa_jogador_visivel[x+2][y] == 0:
-                                mapa_jogador_visivel[x+2][y] = -1
-                                print(f"IA jogou ({x+3}, {y+1}) e errou, tiro ao mar...")
-                        else:
-                            lados_jogar = []
-
-                    elif 'direita' in lados_jogar and 'esquerda' in lados_jogar:
-                        print(x, y)
-                        # Cima Esquerda
-                        if x-1 >= 0 and y-1 >= 0 and mapa_jogador_consulta[x-1][y-1] == navio_acertado\
-                        and mapa_jogador_visivel[x-1][y-1] == 0:
-                            mapa_jogador_visivel[x-1][y-1] = 7 
-                            verifica_acertos(mapa_jogador_consulta, (x-1, y-1), qtds_acertos_ia, qtds_navios_ia, "IA")
-                            acerto_cima_esq = True
-                            x, y = x-1, y-1
-                        elif x-1 >= 0 and y-1 >= 0 and  mapa_jogador_consulta[x-1][y-1] != navio_acertado\
-                        and mapa_jogador_visivel[x-1][y-1] == 0:
-                            mapa_jogador_visivel[x-1][y-1] = -1
-                            print(f"IA jogou ({x}, {y}) e errou, tiro ao mar...")
-                         
-                        # Baixo Esquerda   
-                        elif x+1 <= 9 and y-1 >= 0 and mapa_jogador_consulta[x+1][y-1] == navio_acertado\
-                        and mapa_jogador_visivel[x+1][y-1] == 0:
-                            mapa_jogador_visivel[x+1][y-1] = 7
-                            verifica_acertos(mapa_jogador_consulta, (x+1, y-1), qtds_acertos_ia, qtds_navios_ia, "IA")
+                    i+=1              
+                elif 'esquerda' in lados_jogar:
+                    # Esquerda inferior
+                    if x+1 <= 9 and mapa_jogador_consulta[x+1][y-1] == navio_acertado and mapa_jogador_visivel[x+1][y-1] == 0 \
+                    and not acerto_cima_dir:
+                        mapa_jogador_visivel[x+1][y-1] = 7
+                        verifica_acertos(mapa_jogador_consulta, (x+1, y-1), qtds_acertos_ia, qtds_navios_ia, "IA")
+                        if not acerto_hidro_aviao:
                             acerto_baixo_esq = True
-                            x, y = x+1, y-1
-                        elif x+1 <= 9 and y-1 >= 0 and mapa_jogador_consulta[x+1][y-1] != navio_acertado\
-                        and mapa_jogador_visivel[x+1][y-1] == 0:
-                            mapa_jogador_visivel[x+1][y-1] = -1
-                            print(f"IA jogou ({x+2}, {y}) e errou, tiro ao mar...")
+                            acerto_hidro_aviao = True
+                    elif x+1 <= 9 and mapa_jogador_consulta[x+1][y-1] != navio_acertado and mapa_jogador_visivel[x+1][y-1] == 0 \
+                    and not acerto_cima_dir:
+                        mapa_jogador_visivel[x+1][y-1] = -1
+                        print(f"IA jogou ({x+2}, {y}) e errou, tiro ao mar...")
                         
-                        # Cima direita    
-                        elif x-1 >= 0 and y+1 <= 9 and mapa_jogador_consulta[x-1][y+1] == navio_acertado\
-                        and mapa_jogador_visivel[x-1][y+1] == 0:
-                            mapa_jogador_visivel[x-1][y+1] = 7
-                            verifica_acertos(mapa_jogador_consulta, (x-1, y+1), qtds_acertos_ia, qtds_navios_ia, "IA")
-                            acerto_cima_dir = True
-                            x, y = x-1, y+1
-                        elif x-1 >= 0 and y+1 <= 9 and mapa_jogador_consulta[x-1][y+1] != navio_acertado\
-                        and mapa_jogador_visivel[x-1][y+1] == 0:
-                            mapa_jogador_visivel[x-1][y+1] = -1
-                            print(f"IA jogou ({x}, {y+2}) e errou, tiro ao mar...")    
-                           
-                        # Baixo Direita
-                        elif x+1 <= 9 and y+1 <= 9 and mapa_jogador_consulta[x+1][y+1] == navio_acertado\
-                        and mapa_jogador_visivel[x+1][y+1] == 0:
-                            mapa_jogador_visivel[x+1][y+1] = 7
-                            verifica_acertos(mapa_jogador_consulta, (x+1, y+1), qtds_acertos_ia, qtds_navios_ia, "IA")
-                            acerto_cima_dir = True
-                            x, y = x+1, y+1
-                        elif x+1 <= 9 and y+1 <= 9 and mapa_jogador_consulta[x+1][y+1] != navio_acertado\
-                        and mapa_jogador_visivel[x+1][y+1] == 0:
-                            mapa_jogador_visivel[x+1][y+1] = -1
-                            print(f"IA jogou ({x+2}, {y+2}) e errou, tiro ao mar...")      
-                        """ else:
-                            print(x, y)
-                            print("esse else")
-                            lados_jogar = []
-                            acerto_baixo_dir = acerto_baixo_esq = acerto_cima_dir = acerto_cima_esq = False """
+                    # Esquerda Superior
+                    elif x-1 >= 0 and mapa_jogador_consulta[x-1][y-1] == navio_acertado and mapa_jogador_visivel[x-1][y-1] == 0 \
+                    and not acerto_baixo_dir:
+                        mapa_jogador_visivel[x-1][y-1] = 7
+                        verifica_acertos(mapa_jogador_consulta, (x, y-1), qtds_acertos_ia, qtds_navios_ia, "IA")
+                        if not acerto_hidro_aviao:
+                            acerto_cima_esq = True
+                            acerto_hidro_aviao = True
+                    elif x-1 >= 0 and mapa_jogador_consulta[x-1][y-1] != navio_acertado and mapa_jogador_visivel[x-1][y-1] == 0 \
+                    and not acerto_baixo_dir:
+                        mapa_jogador_visivel[x-1][y-1] = -1
+                        print(f"IA jogou ({x}, {y}) e errou, tiro ao mar...")    
                     else:
-                        print("esse outro else")
-                        lados_jogar = []
-                        acerto_baixo_dir = acerto_baixo_esq = acerto_cima_dir = acerto_cima_esq = False  
+                        lados_jogar.remove("esquerda")
+                  
+                # Outros lados        
+                elif qtds_acertos_ia[5] == 2:
+                    # Baixo
+                    if x+2 <= 9 and mapa_jogador_consulta[x+2][y] == navio_acertado and mapa_jogador_visivel[x+2][y] == 0 \
+                    and not acerto_cima_dir and not acerto_cima_esq:
+                        mapa_jogador_visivel[x+2][y] = 7
+                        verifica_acertos(mapa_jogador_consulta, (x+2, y), qtds_acertos_ia, qtds_navios_ia, "IA")
+                    elif x+2 <= 9 and mapa_jogador_consulta[x+2][y] != navio_acertado and mapa_jogador_visivel[x+2][y] == 0 \
+                    and not acerto_cima_dir and not acerto_cima_esq:
+                        mapa_jogador_visivel[x+2][y] = -1
+                        print(f"IA jogou ({x+3}, {y+1}) e errou, tiro ao mar...")
+                        
+                    # Cima
+                    elif x-2 >= 0 and mapa_jogador_consulta[x-2][y] == navio_acertado and mapa_jogador_visivel[x-2][y] == 0 \
+                    and not acerto_baixo_dir and not acerto_baixo_esq:
+                        mapa_jogador_visivel[x-2][y] = 7
+                        verifica_acertos(mapa_jogador_consulta, (x-2, y), qtds_acertos_ia, qtds_navios_ia, "IA")
+                    elif x-2 >= 0 and mapa_jogador_consulta[x-2][y] != navio_acertado and mapa_jogador_visivel[x-2][y] == 0 \
+                    and not acerto_baixo_dir and not acerto_baixo_esq:
+                        mapa_jogador_visivel[x-2][y] = -1
+                        print(f"IA jogou ({x-1}, {y+1}) e errou, tiro ao mar...")
+                        
+                    # Direita
+                    elif y+2 <= 9 and mapa_jogador_consulta[x][y+2] == navio_acertado and mapa_jogador_visivel[x][y+2] == 0 \
+                    and not acerto_baixo_esq and not acerto_cima_esq:
+                        mapa_jogador_visivel[x][y+2] = 7
+                        verifica_acertos(mapa_jogador_consulta, (x, y+2), qtds_acertos_ia, qtds_navios_ia, "IA")
+                    elif y+2 <= 9 and mapa_jogador_consulta[x][y+2] != navio_acertado and mapa_jogador_visivel[x][y+2] == 0 \
+                    and not acerto_baixo_esq and not acerto_cima_esq:
+                        mapa_jogador_visivel[x][y+2] = -1
+                        print(f"IA jogou ({x+1}, {y+3}) e errou, tiro ao mar...")
+                        
+                    # esquerda
+                    elif y-2 <= 9 and mapa_jogador_consulta[x][y-2] == navio_acertado and mapa_jogador_visivel[x][y-2] == 0 \
+                    and not acerto_baixo_dir and not acerto_cima_dir:
+                        mapa_jogador_visivel[x][y-2] = 7
+                        verifica_acertos(mapa_jogador_consulta, (x, y-2), qtds_acertos_ia, qtds_navios_ia, "IA")
+                    elif y-2 <= 9 and mapa_jogador_consulta[x][y-2] != navio_acertado and mapa_jogador_visivel[x][y-2] == 0 \
+                    and not acerto_baixo_dir and not acerto_cima_dir:
+                        mapa_jogador_visivel[x][y-2] = -1
+                        print(f"IA jogou ({x+1}, {y+1}) e errou, tiro ao mar...")
+                        
+                    else:
+                        qtds_acertos_ia[5] = 0   
                 else:
-                    print("entrou aqui no else")
-                    deslocamento = 0
                     lados_jogar = []
-                i+=1    
+                    acerto_hidro_aviao = False        
+                      
     #printa_mapa()
 
 def menu():
@@ -502,7 +398,6 @@ def menu():
             print("Aperte 1 para começar ou 2 para o computador começar: ")
 
 if __name__ == "__main__":
-
     with open("mapas.json", 'r') as file:
         dict_json = json.load(file)
         mapa_pc = dict_json['mapa_pc']
@@ -510,17 +405,8 @@ if __name__ == "__main__":
     
         mapa_ia_consulta = deepcopy(mapa_ia)
         mapa_jogador_consulta = deepcopy(mapa_pc)
-        #mapa_ia_visivel = deepcopy(mapa_ia)
-        #mapa_jogador_visivel = deepcopy(mapa_pc)
-    #printa_mapa()
-    i = 0
-    while i < 1:
-        ataque()
-        i+=1
+     
+    mapa_jogador_consulta = interface_colocar_navios(mapa_jogador_consulta, qtds_navios_jogador)   
     printa_mapa()
-    print(navios_afundados)
-    """ mapa_jogador_visivel = adicionar_navio(hidro_avioes[1], (3, 3), 6, mapa_jogador_visivel)
-    mapa_jogador_visivel = adicionar_navio(submarino[0], (5, 2), 1, mapa_jogador_visivel)
-    mapa_jogador_visivel = adicionar_navio(submarino[0], (5, 6), 1, mapa_jogador_visivel)
-    mapa_jogador_visivel = adicionar_navio(submarino[0], (2, 3), 1, mapa_jogador_visivel) """
+
        
