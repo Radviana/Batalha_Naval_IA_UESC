@@ -185,7 +185,7 @@ def ataque():
     while i < 3:
         jogadas_disponiveis = pega_posicoes_disponiveis(mapa_jogador_visivel)
         if len(jogadas_disponiveis) == 0:
-            print("entrou aqui, numero de jogadas = ", len(jogadas_disponiveis))
+            print("Não há mais jogadas disponíveis...\n")
             break
         if not acerto_ia:
             numero_sorteado = np.random.randint(0, len(jogadas_disponiveis))
@@ -214,9 +214,9 @@ def ataque():
             if lados_jogar == []:
                 acerto_ia = False
                 deslocamento = 0
-                print('Acerto ia False 1')
                 
             elif navio_acertado in [1, 2, 3, 4, 5]: # Verifica se é um dos návios base
+                print(lados_jogar)
                 if lados_jogar[0] == 'esquerda' and y-1-deslocamento >= 0 and mapa_jogador_visivel[x][y-1-deslocamento] == 0:
                     if mapa_jogador_consulta[x][y-1-deslocamento] == navio_acertado:
                         mapa_jogador_visivel[x][y-1-deslocamento] = 7
@@ -402,14 +402,14 @@ def menu():
 if __name__ == "__main__":
     with open("mapas.json", 'r') as file:
         dict_json = json.load(file)
-        mapa_pc = dict_json['mapa_pc']
-        mapa_ia = dict_json['mapa_ia']
+        mapa_pc = dict_json['mapa_ia_2']
+        mapa_ia = dict_json['mapa_pc']
     
         mapa_ia_consulta = deepcopy(mapa_ia)
         mapa_jogador_consulta = deepcopy(mapa_pc)
     
     #interface_colocar_navios()   
-    for i in range(20):
+    for i in range(30):
         ataque()
     printa_mapa()
     print(navios_afundados_ia)
