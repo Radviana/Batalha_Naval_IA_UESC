@@ -391,14 +391,17 @@ def menu():
     
     global mapa_ia_consulta, mapa_jogador_consulta
     global navios_afundados_ia, navios_afundados_jogador
+    padrao = False
     
     with open("mapas.json", 'r') as file:
         mapas = json.load(file)
         id_mapa_sorteado = np.random.randint(0, 22)
         mapa_ia_consulta  = mapas[f'mapa_{id_mapa_sorteado}']
+        mapa_jogador_consulta = mapas["mapa_default"]
         
-        id_mapa_sorteado = np.random.randint(0, 22)
-        mapa_jogador_consulta = mapas[f'mapa_{id_mapa_sorteado}']
+        if(padrao == False):
+            id_mapa_sorteado = np.random.randint(0, 22)
+            mapa_jogador_consulta = mapas[f'mapa_{id_mapa_sorteado}']
     
     while (opt != 4):
         print("\n[1] - Iniciar Jogo\n[2] - Definir Mapas\n[3] - Mostrar Mapas\n[4] - Sair\n")
@@ -436,6 +439,9 @@ def menu():
              
         elif(opt==2):
             mapa_jogador_consulta = np.zeros((tamanho, tamanho), dtype=int) # Consulta
+            mapas = json.load(file)
+            id_mapa_sorteado = np.random.randint(0, 22)
+            mapa_ia_consulta  = mapas[f'mapa_{id_mapa_sorteado}']
             interface_colocar_navios()
         elif(opt==3):
             printa_mapa(True)
