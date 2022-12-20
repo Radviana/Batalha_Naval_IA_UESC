@@ -58,7 +58,7 @@ def interface_colocar_navios():
   
     for i in range(len(navios)):
         j = 0
-        while j < len(quantidade_navios):
+        while j < quantidade_navios[i]:
             print(f"Colocando {nomes_navios[i]}...")
             x_navio = int(input(f"Digite a posicão X do {nomes_navios[i]}: "))
             y_navio = int(input(f"Digite a posicão Y do {nomes_navios[i]}: "))
