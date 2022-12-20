@@ -53,11 +53,12 @@ def printa_mapa(mapa_consulta: bool = False) -> None:
 def interface_colocar_navios():
     navios = [submarino, corvetas, fragatas, cruzadores, porta_avioes, hidro_avioes]
     id_navios = [1, 2, 3, 4, 5, 6]
+    quantidade_navios = [3, 2, 3, 1, 1, 2]
     global qtds_navios_jogador, mapa_jogador_consulta
   
     for i in range(len(navios)):
-        op = -1
-        while True:
+        j = 0
+        while j < len(quantidade_navios):
             print(f"Colocando {nomes_navios[i]}...")
             x_navio = int(input(f"Digite a posicão X do {nomes_navios[i]}: "))
             y_navio = int(input(f"Digite a posicão Y do {nomes_navios[i]}: "))
@@ -68,17 +69,12 @@ def interface_colocar_navios():
             
             # Incrementa a quantidade de determinado návio no mapa
             if not np.array_equal(tmp_mapa, mapa_jogador_consulta):
-                qtds_navios_jogador[i] += 1
                 print(f"\nFoi adicionado um {nomes_navios[i]} na posição ({x_navio}, {y_navio}).")
                 mapa_jogador_consulta = tmp_mapa
+                j+=1
             else:
                 print(f"\nErro ao adicionar o {nomes_navios[i]} na posição ({x_navio}, {y_navio}).")
             
-            op = input("Digite 0 para Sair e qualquer outra tecla para continuar: ")
-            print()
-            
-            if op == '0':
-                break  
      
 def pega_posicoes_disponiveis(mapa):
     posicoes_vazias = set()
@@ -409,7 +405,7 @@ def menu():
                 mapa_ia_consulta  = mapas[f'mapa_ia_{id_mapa_sorteado}']
                 
                 if padrao:
-                    id_mapa_sorteado = np.random.randint(1, 8)
+                    id_mapa_sorteado = np.random.randint(0, 22)
                     mapa_jogador_consulta  = mapas[f'mapa_ia_{id_mapa_sorteado}']
             
             while(opt_jogador not in [1, 2]):
