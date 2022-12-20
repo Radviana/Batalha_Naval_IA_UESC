@@ -58,7 +58,7 @@ def interface_colocar_navios():
   
     for i in range(len(navios)):
         j = 0
-        while j < len(quantidade_navios):
+        while j < quantidade_navios[i]:
             print(f"Colocando {nomes_navios[i]}...")
             x_navio = int(input(f"Digite a posicão X do {nomes_navios[i]}: "))
             y_navio = int(input(f"Digite a posicão Y do {nomes_navios[i]}: "))
@@ -427,7 +427,12 @@ def menu():
                     ataque_jogador() if player_1 == 'Jogador' else ataque_ia()       
                 else:
                     ataque_ia() if player_2 == 'IA' else ataque_jogador()
-                i+=1      
+                i+=1   
+            
+            if navios_afundados_jogador < quantidade_total_navios:
+                print("Parabens Jogador Ganhou !!!!.")
+            else:
+                print("Parabens IA Ganhou!!!")   
              
         elif(opt==2):
             mapa_jogador_consulta = np.zeros((tamanho, tamanho), dtype=int) # Consulta
