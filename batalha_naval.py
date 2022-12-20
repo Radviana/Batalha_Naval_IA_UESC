@@ -74,7 +74,7 @@ def interface_colocar_navios():
                 j+=1
             else:
                 print(f"\nErro ao adicionar o {nomes_navios[i]} na posição ({x_navio}, {y_navio}).")
-            
+            printa_mapa(True)   
      
 def pega_posicoes_disponiveis(mapa):
     posicoes_vazias = set()
@@ -184,11 +184,14 @@ def ataque_ia() -> None:
     while i < 3:
         jogadas_disponiveis = pega_posicoes_disponiveis(mapa_jogador_visivel)
         
-        if len(jogadas_disponiveis) == 0 and qtds_navios_ia[0] == 0:
-                print(qtds_navios_ia[0])
+        if len(jogadas_disponiveis) == 0 and sum(qtds_navios_ia) == 0:
                 print("Não há mais jogadas disponíveis...\n")
                 break
         if not acerto_ia:
+            if len(jogadas_disponiveis) == 0 and sum(qtds_navios_ia) > 0:
+                tmp_x, tmp_y = np.where(mapa_jogador_visivel == 0)
+                jogadas_disponiveis = [(x, y) for x, y in zip(tmp_x, tmp_y)]
+            
             numero_sorteado = np.random.randint(0, len(jogadas_disponiveis))
             x, y = jogadas_disponiveis[numero_sorteado]
             x, y = x-1, y-1
@@ -386,9 +389,16 @@ def menu():
     print("\t| |_/ /| (_| || |_ | (_| || || | | || (_| |  | |\  || (_| | \ V / | (_| || |")
     print("\t\____/  \__,_| \__| \__,_||_||_| |_| \__,_|  \_| \_/ \__,_|  \_/   \__,_||_|")
     
-    padrao = True
     global mapa_ia_consulta, mapa_jogador_consulta
     global navios_afundados_ia, navios_afundados_jogador
+    
+    with open("mapas.json", 'r') as file:
+        mapas = json.load(file)
+        id_mapa_sorteado = np.random.randint(0, 22)
+        mapa_ia_consulta  = mapas[f'mapa_{id_mapa_sorteado}']
+        
+        id_mapa_sorteado = np.random.randint(0, 22)
+        mapa_jogador_consulta = mapas[f'mapa_{id_mapa_sorteado}']
     
     while (opt != 4):
         print("\n[1] - Iniciar Jogo\n[2] - Definir Mapas\n[3] - Mostrar Mapas\n[4] - Sair\n")
@@ -398,15 +408,6 @@ def menu():
         if(opt==1):
             opt_jogador = 0
             player_1, player_2 = None, None
-            
-            with open("mapas.json", 'r') as file:
-                mapas = json.load(file)
-                id_mapa_sorteado = np.random.randint(1, 8)
-                mapa_ia_consulta  = mapas[f'mapa_ia_{id_mapa_sorteado}']
-                
-                if padrao:
-                    id_mapa_sorteado = np.random.randint(0, 22)
-                    mapa_jogador_consulta  = mapas[f'mapa_ia_{id_mapa_sorteado}']
             
             while(opt_jogador not in [1, 2]):
                 print("\n\nEscolha Quem vai iniciar primeiro.\n[1] - Jogador\n[2] - IA\n")
@@ -421,7 +422,7 @@ def menu():
                     print("Opção inválida, digite certo, SEU BOLSOMINION!!!.\n")
             
             i=0
-            while(navios_afundados_jogador < qtds_navios_jogador[0] or navios_afundados_ia < qtds_navios_ia[0]):
+            while(navios_afundados_jogador < quantidade_total_navios or navios_afundados_ia < quantidade_total_navios):
                 if i % 2 == 0:
                     ataque_jogador() if player_1 == 'Jogador' else ataque_ia()       
                 else:
@@ -438,10 +439,6 @@ def menu():
         else:
             print("Opção inválida, digite certo, SEU BOLSOMINION!!!.")
 
-if __name__ == "__main__":
-    #interface_colocar_navios()   
-    """ for i in range(33):
-        ataque_ia()
-    printa_mapa()
-    print(navios_afundados_ia) """
+def main():
     menu()
+main()

@@ -84,6 +84,7 @@ acerto_cima_dir = False
 acerto_baixo_esq = False
 acerto_baixo_dir = False
 
+quantidade_total_navios = 12
 navios_afundados_jogador = 0
 navios_afundados_ia = 0
 x, y = 0, 0
