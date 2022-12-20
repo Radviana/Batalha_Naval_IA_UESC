@@ -430,6 +430,7 @@ def menu():
                 i+=1      
              
         elif(opt==2):
+            mapa_jogador_consulta = np.zeros((tamanho, tamanho), dtype=int) # Consulta
             interface_colocar_navios()
         elif(opt==3):
             printa_mapa(True)
