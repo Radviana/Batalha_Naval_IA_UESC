@@ -27,7 +27,7 @@ hidro_avioes = [criar_navio(2, 3, [2, 4, 6]), criar_navio(2, 3, [1, 3, 5]), cria
 nomes_navios = ['Submarino', 'Corveta','Fragata', 'Cruzador', 'Porta Avião', 'Hidro Avião']
 
 # Quantidades de navios jogador
-qtd_submarino_jogador = 0
+qtd_submarino_jogador = 1
 qtd_corveta_jogador = 0
 qtd_fragata_jogador = 0
 qtd_cruzador_jogador = 0 

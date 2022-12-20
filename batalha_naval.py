@@ -24,7 +24,7 @@ def printa_navio(ship):
         print()
     print()
     
-def printa_mapa() -> None:
+def printa_mapa(mapa_consulta: bool = False) -> None:
     print("\n\t   IA\t\t\t   Player")
     print("    1 2 3 4 5 6 7 8 9 10 || 1 2 3 4 5 6 7 8 9 10")
     print("    _____________________||_____________________")
@@ -33,9 +33,13 @@ def printa_mapa() -> None:
             espaco = " " * 1
         else:
             espaco = " " * 2 
-          
-        tmp_ia = list(map(str, list(mapa_ia_visivel[linha])))
-        tmp_jogador = list(map(str, list(mapa_jogador_visivel[linha])))
+            
+        if mapa_consulta:
+            tmp_ia = list(map(str, list(mapa_ia_consulta[linha])))
+            tmp_jogador = list(map(str, list(mapa_jogador_consulta[linha])))
+        else:  
+            tmp_ia = list(map(str, list(mapa_ia_visivel[linha])))
+            tmp_jogador = list(map(str, list(mapa_jogador_visivel[linha])))
             
         tmp_ia = list(map(substitui_print, tmp_ia))
         tmp_jogador = list(map(substitui_print, tmp_jogador))
@@ -95,7 +99,7 @@ def pega_posicoes_disponiveis(mapa):
     return list(posicoes_vazias)
 
 def verifica_acertos(mapa_consulta, coords, qtds_acertos, qtds_navios, nome_jogador):
-    global lados_jogar, jogadas_ia, jogadas_jogador, navios_afundados_ia
+    global lados_jogar, jogadas_ia, jogadas_jogador, navios_afundados_ia, navios_afundados_jogador
     x, y = coords
     
     if nome_jogador.lower() == "ia" and (x, y) not in jogadas_ia:
@@ -142,18 +146,11 @@ def verifica_lados_jogar(x, y):
             lados_jogar = ['baixo', 'cima', 'esquerda']
         else:
             lados_jogar = ['baixo', 'cima', 'direita', 'esquerda']
+  
+def ataque_jogador() -> None:
+    global mapa_ia_visivel, qtds_acertos_jogador 
     
-def ataque():
-    global acerto_ia
-    global deslocamento
-    global lados_jogar
-    global posicao_acerto
-    global navio_acertado
-    global qtds_acertos_ia, qtds_acertos_jogador
-    global acerto_baixo_dir, acerto_baixo_esq, acerto_cima_dir, acerto_cima_esq, acerto_hidro_aviao
-    global x,y
-    
-    """ printa_mapa()
+    printa_mapa()
     print("Vez do jogador, Faça 3 ataques: ")
     for i in range(3):
         while True:
@@ -178,15 +175,23 @@ def ataque():
                 break
             else:
                 printa_mapa()
-                print("Jogada Invalida, repita a jogada...") """
+                print("Jogada Invalida, repita a jogada...") 
+    _ = input("Digite qualquer tecla....")
+    
+def ataque_ia() -> None:
+    global acerto_ia, mapa_jogador_visivel, deslocamento, lados_jogar, posicao_acerto, navio_acertado
+    global qtds_acertos_ia, acerto_baixo_dir, acerto_baixo_esq, acerto_cima_dir, acerto_cima_esq, acerto_hidro_aviao
+    global x,y
     
     print("\n-------------VEZ DA IA----------------")  
     i = 0                 
     while i < 3:
         jogadas_disponiveis = pega_posicoes_disponiveis(mapa_jogador_visivel)
-        if len(jogadas_disponiveis) == 0:
-            print("Não há mais jogadas disponíveis...\n")
-            break
+        
+        if len(jogadas_disponiveis) == 0 and qtds_navios_ia[0] == 0:
+                print(qtds_navios_ia[0])
+                print("Não há mais jogadas disponíveis...\n")
+                break
         if not acerto_ia:
             numero_sorteado = np.random.randint(0, len(jogadas_disponiveis))
             x, y = jogadas_disponiveis[numero_sorteado]
@@ -216,7 +221,6 @@ def ataque():
                 deslocamento = 0
                 
             elif navio_acertado in [1, 2, 3, 4, 5]: # Verifica se é um dos návios base
-                print(lados_jogar)
                 if lados_jogar[0] == 'esquerda' and y-1-deslocamento >= 0 and mapa_jogador_visivel[x][y-1-deslocamento] == 0:
                     if mapa_jogador_consulta[x][y-1-deslocamento] == navio_acertado:
                         mapa_jogador_visivel[x][y-1-deslocamento] = 7
@@ -367,9 +371,11 @@ def ataque():
                         print(f"IA jogou ({x+1}, {y+1}) e errou, tiro ao mar...")
                         
                     else:
-                        qtds_acertos_ia[5] = 0  
+                        qtds_acertos_ia[5] = 0
+                        acerto_baixo_dir, acerto_cima_dir, acerto_baixo_esq, acerto_cima_esq = (False, False, False, False)  
                     i+=1   
                 else:
+                    acerto_baixo_dir, acerto_cima_dir, acerto_baixo_esq, acerto_cima_esq = (False, False, False, False)
                     lados_jogar = []
                     acerto_hidro_aviao = False        
                       
@@ -383,35 +389,63 @@ def menu():
     print("\t| ___ \ / _` || __| / _` || || '_ \  / _` |  | . ` | / _` |\ \ / / / _` || |")
     print("\t| |_/ /| (_| || |_ | (_| || || | | || (_| |  | |\  || (_| | \ V / | (_| || |")
     print("\t\____/  \__,_| \__| \__,_||_||_| |_| \__,_|  \_| \_/ \__,_|  \_/   \__,_||_|")
-    opt = int(input("\n\nAperte 1 para começar ou 2 para o computador começar: "))
-    while (opt!=1 or opt!=2):
+    
+    padrao = True
+    global mapa_ia_consulta, mapa_jogador_consulta
+    global navios_afundados_ia, navios_afundados_jogador
+    
+    while (opt != 4):
+        print("\n[1] - Iniciar Jogo\n[2] - Definir Mapas\n[3] - Mostrar Mapas\n[4] - Sair\n")
+        print("Digite a opção:")
+        opt = int(input("> "))
+        
         if(opt==1):
-            #Escolher quem vai atacar primeiro
-            # Iniciar Jogo (Ataque)
-            break
+            opt_jogador = 0
+            player_1, player_2 = None, None
+            
+            with open("mapas.json", 'r') as file:
+                mapas = json.load(file)
+                id_mapa_sorteado = np.random.randint(1, 8)
+                mapa_ia_consulta  = mapas[f'mapa_ia_{id_mapa_sorteado}']
+                
+                if padrao:
+                    id_mapa_sorteado = np.random.randint(1, 8)
+                    mapa_jogador_consulta  = mapas[f'mapa_ia_{id_mapa_sorteado}']
+            
+            while(opt_jogador not in [1, 2]):
+                print("\n\nEscolha Quem vai iniciar primeiro.\n[1] - Jogador\n[2] - IA\n")
+                print("Digite a opção:")
+                opt_jogador = int(input("> "))
+                
+                if opt_jogador == 1:
+                    player_1, player_2 = 'Jogador', 'IA'
+                elif opt_jogador == 2:
+                    player_1, player_2 = 'IA', 'Jogador'
+                else:
+                    print("Opção inválida, digite certo, SEU BOLSOMINION!!!.\n")
+            
+            i=0
+            while(navios_afundados_jogador < qtds_navios_jogador[0] or navios_afundados_ia < qtds_navios_ia[0]):
+                if i % 2 == 0:
+                    ataque_jogador() if player_1 == 'Jogador' else ataque_ia()       
+                else:
+                    ataque_ia() if player_2 == 'IA' else ataque_jogador()
+                i+=1      
+             
         elif(opt==2):
-            # Definir Mapa Jogador
-            break
+            interface_colocar_navios()
+            padrao = False
         elif(opt==3):
-            # Mostrar Mapas
+            printa_mapa(True)
+        elif(opt==4):
             break
         else:
-            print("Opção inválida.")
-            print("Aperte 1 para começar ou 2 para o computador começar: ")
+            print("Opção inválida, digite certo, SEU BOLSOMINION!!!.")
 
 if __name__ == "__main__":
-    with open("mapas.json", 'r') as file:
-        dict_json = json.load(file)
-        mapa_pc = dict_json['mapa_ia_2']
-        mapa_ia = dict_json['mapa_pc']
-    
-        mapa_ia_consulta = deepcopy(mapa_ia)
-        mapa_jogador_consulta = deepcopy(mapa_pc)
-    
     #interface_colocar_navios()   
-    for i in range(30):
-        ataque()
+    """ for i in range(33):
+        ataque_ia()
     printa_mapa()
-    print(navios_afundados_ia)
-
-    #mapa_jogador_visivel = adicionar_navio(porta_avioes[0], (1, 1), 5, mapa_jogador_visivel)
+    print(navios_afundados_ia) """
+    menu()
