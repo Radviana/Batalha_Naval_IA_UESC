@@ -431,7 +431,6 @@ def menu():
              
         elif(opt==2):
             interface_colocar_navios()
-            padrao = False
         elif(opt==3):
             printa_mapa(True)
         elif(opt==4):
